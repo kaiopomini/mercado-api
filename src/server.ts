@@ -12,4 +12,4 @@ app.post("/test-post", (req, res) => {
     return res.send("Ola")
 })
 
-app.listen(3000, () => console.log("server is running..."))
+app.listen(process.env.PORT || 3000, () => console.log("server is running..."))
