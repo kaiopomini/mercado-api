@@ -5,8 +5,8 @@ import "./database";
 
 const app = express();
 
-app.get("/test", (req, res) => {
-    return res.send("Ola")
+app.get("/", (req, res) => {
+    return res.send("ok")
 })
 app.post("/test-post", (req, res) => {
     return res.send("Ola")
