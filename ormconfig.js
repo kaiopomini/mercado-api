@@ -18,6 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production'){
     module.exports = {
         "type": "mysql",
+        "ssl": process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
         "url": process.env.CLEARDB_DATABASE_URL,
         "entities": ["dist/entities/*.ts"],
         "migrations": ["dist/database/migrations/*.ts"],
