@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production'){
         "entities": ["dist/entities/*.ts"],
         "migrations": ["dist/database/migrations/*.ts"],
         "cli": {
-            "migrationsDir": "src/database/migrations",
+            "migrationsDir": ["src/database/migrations/"],
             "entitiesDir": "src/entities"
         }
     }
