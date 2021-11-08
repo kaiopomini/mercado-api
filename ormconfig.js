@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'production'){
         "url": process.env.CLEARDB_DATABASE_URL,
         "entities": ["dist/entities/*.ts"],
         "migrations": ["dist/database/migrations/*.ts"],
+        "synchronize": true,
         "cli": {
             "migrationsDir": ["src/database/migrations/"],
             "entitiesDir": "src/entities"
