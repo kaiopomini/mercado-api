@@ -16,15 +16,15 @@ if (process.env.NODE_ENV === 'development') {
     return
 }
 if (process.env.NODE_ENV === 'production'){
-    
-}
-module.exports = {
-    "type": "mysql",
-    "url": process.env.CLEARDB_DATABASE_URL,
-    "entities": ["dist/entities/*.ts"],
-    "migrations": ["dist/database/migrations/*.ts"],
-    "cli": {
-        "migrationsDir": "src/database/migrations",
-        "entitiesDir": "src/entities"
+    module.exports = {
+        "type": "mysql",
+        "url": process.env.CLEARDB_DATABASE_URL,
+        "entities": ["dist/entities/*.ts"],
+        "migrations": ["dist/database/migrations/*.ts"],
+        "cli": {
+            "migrationsDir": "dist/database/migrations",
+            "entitiesDir": "dist/entities"
+        }
     }
+    return
 }
