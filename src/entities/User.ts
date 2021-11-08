@@ -22,7 +22,7 @@ class User {
     password: string;
 
     @Column()
-    avatar: string
+    avatar: string;
 
     @CreateDateColumn()
     created_at: Date;
@@ -34,6 +34,8 @@ class User {
         if(!this.id) {
             this.id =  uuid();
         }
+        this.avatar = 'default';
+        this.status = 1;
     }
 
 }
