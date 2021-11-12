@@ -34,8 +34,12 @@ class User {
         if(!this.id) {
             this.id =  uuid();
         }
-        this.avatar = 'default';
-        this.status = 1;
+        if(!this.avatar) {
+            this.avatar = 'default';
+        }
+        if(!this.status) {
+            this.status = 1;
+        }
     }
 
 }
