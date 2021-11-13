@@ -12,7 +12,10 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
 
     // validade se o token está preenchido
     if(!authToken) {
-        return response.status(401).end();
+        return response.status(401).json({
+            success: false,
+            message: "O usuário deve estar logado",
+        });
     }
 
     const [, token ] = authToken.split(" ");
@@ -26,6 +29,9 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
 
         return next();
     } catch (error) {
-        return response.status(401).end();
+        return response.status(401).json({
+            success: false,
+            message: "O usuário deve estar logado",
+        });
     }
 } 

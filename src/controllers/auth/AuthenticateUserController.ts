@@ -1,18 +1,22 @@
 import { Request, Response } from "express";
-import { AuthenticateUserService } from "../../services/auth/AuthenticateUserService";
+import { AuthenticateServices } from "../../services/auth/AuthenticateServices";
 
 class AuthenticateUserController {
-    async handle(request: Request, response: Response) {
+    async store(request: Request, response: Response) {
         const { email, password } = request.body;
 
-        const authenticateUserService = new AuthenticateUserService();
+        const authenticateUserService = new AuthenticateServices();
 
-        const token = await authenticateUserService.execute({
+        const token = await authenticateUserService.authUser({
             email,
             password
         });
 
-        return response.json(token);
+        return response.status(201).json({
+            succes: true,
+            payload: token,
+            message: "Login realizado com sucesso."
+        });
     }
 }
 

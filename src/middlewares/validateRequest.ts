@@ -1,4 +1,4 @@
-import e, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 
 export function validateRequest(request: Request, response: Response, next: NextFunction) {
@@ -9,8 +9,8 @@ export function validateRequest(request: Request, response: Response, next: Next
         
         return response.status(400).json({ 
             success: false,
+            message: "informações inválidas",
             errors: errors.array(),
-            message: "Invalid request"
         })
         
     }

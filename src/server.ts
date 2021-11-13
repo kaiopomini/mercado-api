@@ -21,7 +21,6 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
         return response.status(400).json({
             success: false,
             message: error.message,
-            errors: []
         });
     }
 

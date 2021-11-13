@@ -1,4 +1,5 @@
 import { hash } from "bcryptjs";
+import { User } from "../../entities/User";
 
 import { UserRepository } from "../../repositories";
 
@@ -10,8 +11,15 @@ interface IUserRequest {
     
 }
 
-class CreateUserService {
-    async excute({ name, surname, email, password } : IUserRequest ) {
+interface IUserResponse {
+    name: string;
+    surname: string;
+    email: string;
+    id: string;
+}
+
+export class UserServices {
+    async create({ name, surname, email, password } : IUserRequest ) : Promise<IUserResponse>{
         const usersRepository = UserRepository();
 
         if (!email) {
@@ -35,10 +43,10 @@ class CreateUserService {
             password: passwordHash,
         });
 
-        await usersRepository.save(user);
+        const { id }= await usersRepository.save(user);
+        
+        const resUser = { id, name, surname, email }
 
-        return user;
+        return resUser
     }
 }
-
-export { CreateUserService }
