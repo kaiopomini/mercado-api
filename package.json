@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "start": "node dist/server.js",
-    "build": "tsc",
-    "postinstall": "npm run build",
+    "build": "tsc && npm run postbuild",
+    "postbuild": "npx typeorm migration:run",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
   },
   "devDependencies": {
