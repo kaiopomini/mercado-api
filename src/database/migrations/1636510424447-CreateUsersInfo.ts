@@ -1,12 +1,12 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreateUsers1636326437353 implements MigrationInterface {
+export class CreateUserInfo1636510424447 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "users",
-                columns: [
+                name: "user_info",
+                columns:[
                     {
                         name: "id",
                         type: "varchar",
@@ -14,36 +14,22 @@ export class CreateUsers1636326437353 implements MigrationInterface {
                         generationStrategy: 'uuid',
                     },
                     {
-                        name: "name",
-                        type: "varchar"
+                        name: "user_id",
+                        type: "varchar",
                     },
                     {
-                        name: "surname",
-                        type: "varchar"
+                        name: "cpf",
+                        type: "varchar",
                     },
                     {
-                        name: "deleted",
-                        type: "boolean",
-                        default: false
-                    },
-                    {
-                        name: "valid_email",
-                        type: "boolean",
-                        default: false
-                    },
-                    {
-                        name: "avatar",
+                        name: "gender",
                         type: "varchar",
                         isNullable: true
                     },
                     {
-                        name: "email",
-                        type: "varchar",
-                        isUnique: true
-                    },
-                    {
-                        name: "password",
-                        type: "varchar"
+                        name: "birth_date",
+                        type: "timestamp",
+                        isNullable: true
                     },
                     {
                         name: "created_at",
@@ -55,14 +41,23 @@ export class CreateUsers1636326437353 implements MigrationInterface {
                         type: "timestamp",
                         default: "now()"
                     }
-                
+                ],
+                foreignKeys: [
+                    {
+                        name: "FKUserUser_info",
+                        referencedTableName: "users",
+                        referencedColumnNames: ["id"],
+                        columnNames: ["user_id"],
+                        onDelete: "RESTRICT",
+                        onUpdate: "CASCADE",
+                    }
                 ]
             })
         )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("users")
+        await queryRunner.dropTable("user_info")
     }
 
 }

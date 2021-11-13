@@ -1,7 +1,6 @@
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import { getCustomRepository } from "typeorm";
-import { UsersRepositories } from "../../repositories/UsersRepositories";
+import { UserRepository } from "../../repositories";
 
 interface IAuthenticateRequest {
     email: string;
@@ -10,7 +9,7 @@ interface IAuthenticateRequest {
 
 class AuthenticateUserService {
     async execute({ email, password } : IAuthenticateRequest) {
-        const usersRepositories = getCustomRepository(UsersRepositories)
+        const usersRepositories = UserRepository();
 
         // verifica se o email existe
         const user = await usersRepositories.findOne({ email });

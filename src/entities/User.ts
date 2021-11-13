@@ -1,19 +1,23 @@
-import {Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { v4 as uuid} from 'uuid'
+import {Entity, Column, JoinTable, ManyToMany } from "typeorm";
+
+import { BaseEntity } from "./BaseEntity";
+import { Permission } from "./Permission";
+import { Role } from "./Role";
 
 @Entity("users")
-class User {
-    @PrimaryColumn()
-    readonly id: string;
-
+class User extends BaseEntity {
+    
     @Column()
     name: string;
 
     @Column()
     surname: string;
 
-    @Column()
-    status: Number;
+    @Column({ default: false })
+    deleted: Boolean;
+    
+    @Column({ default: false })
+    valid_email: Boolean;
 
     @Column()
     email: string;
@@ -24,21 +28,26 @@ class User {
     @Column()
     avatar: string;
 
-    @CreateDateColumn()
-    created_at: Date;
-
-    @UpdateDateColumn()
-    updated_at: Date;
+    @ManyToMany(() => Role)
+    @JoinTable({
+      name: "users_roles",
+      joinColumns: [{ name: "user_id" }],
+      inverseJoinColumns: [{ name: "role_id" }],
+    })
+    roles: Role[];
+  
+    @ManyToMany(() => Permission)
+    @JoinTable({
+      name: "users_permissions",
+      joinColumns: [{ name: "user_id" }],
+      inverseJoinColumns: [{ name: "permission_id" }],
+    })
+    permissions: Permission[];
 
     constructor() {
-        if(!this.id) {
-            this.id =  uuid();
-        }
-        if(!this.avatar) {
+        super()
+        if (!this.avatar) {
             this.avatar = 'default';
-        }
-        if(!this.status) {
-            this.status = 1;
         }
     }
 

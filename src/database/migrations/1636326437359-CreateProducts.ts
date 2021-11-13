@@ -1,11 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CreateUsers1636326437353 implements MigrationInterface {
-
+export class CreateProducts1636326437359 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: "users",
+                name: "products",
                 columns: [
                     {
                         name: "id",
@@ -15,54 +14,37 @@ export class CreateUsers1636326437353 implements MigrationInterface {
                     },
                     {
                         name: "name",
-                        type: "varchar"
-                    },
-                    {
-                        name: "surname",
-                        type: "varchar"
-                    },
-                    {
-                        name: "deleted",
-                        type: "boolean",
-                        default: false
-                    },
-                    {
-                        name: "valid_email",
-                        type: "boolean",
-                        default: false
-                    },
-                    {
-                        name: "avatar",
                         type: "varchar",
-                        isNullable: true
                     },
                     {
-                        name: "email",
+                        name: "gtin_code",
                         type: "varchar",
-                        isUnique: true
+                        isUnique: true,
                     },
                     {
-                        name: "password",
-                        type: "varchar"
+                        name: "description",
+                        type: "varchar",
+                    },
+                    {
+                        name: "price",
+                        type: "numeric",
                     },
                     {
                         name: "created_at",
                         type: "timestamp",
-                        default: "now()"
+                        default: "now()",
                     },
                     {
                         name: "updated_at",
                         type: "timestamp",
                         default: "now()"
                     }
-                
-                ]
+                ],
             })
-        )
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable("users")
+        await queryRunner.dropTable("products");
     }
-
 }
