@@ -36,7 +36,7 @@ router.post("/admin/roles-permissions", ensureAuthenticated, rolePermissionContr
 router.post("/admin/products", ensureAuthenticated, storeProductSchema, validateRequest, productController.store);
 router.get("/admin/products", ensureAuthenticated, productController.index);
 router.get("/admin/products/:id", ensureAuthenticated, productController.show);
-// router.put("/admin/products", ensureAuthenticated, storeProductSchema, validateRequest, productController.update);
-// router.delete("/admin/products", ensureAuthenticated, productController.destroy);
+router.put("/admin/products/:id", ensureAuthenticated, storeProductSchema, validateRequest, productController.update);
+router.delete("/admin/products/:id", ensureAuthenticated, productController.destroy);
 
 export { router }

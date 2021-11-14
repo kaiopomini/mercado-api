@@ -23,7 +23,7 @@ export class ProductController {
 
         const {data, ...rest} = await productServices.getAll(request);
 
-        return response.status(201).json({
+        return response.status(200).json({
             succes: true,
             payload: data,
             message: "Requisição realizada com sucesso.",
@@ -39,10 +39,41 @@ export class ProductController {
 
         const produto = await productServices.getOne(id);
 
-        return response.status(201).json({
+        return response.status(200).json({
             succes: true,
             payload: produto,
             message: "Requisição realizada com sucesso.",
+            
+        });
+    }
+
+    async update(request: Request, response: Response) {
+        
+        const { id } = request.params
+        const { name, description, price, gtin_code } = request.body;
+
+        const productServices = new ProductServices();
+
+        const product = await productServices.update({ name, description, price, gtin_code, id });
+
+        return response.status(201).json({
+            succes: true,
+            payload: product,
+            message: "Produto atualizado com sucesso."
+        });
+    }
+
+    async destroy(request: Request, response: Response) {
+
+        const { id } = request.params
+
+        const productServices = new ProductServices();
+
+        const produto = await productServices.delete(id);
+
+        return response.status(200).json({
+            succes: true,
+            message: "Produto excluído com sucesso.",
             
         });
     }

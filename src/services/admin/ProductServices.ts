@@ -8,7 +8,6 @@ interface IProductRequest {
     description: string;
     price: number;
     gtin_code: string;
-
 }
 
 interface IProductPaginatedResponse {
@@ -17,6 +16,14 @@ interface IProductPaginatedResponse {
     page: number;
     per_page: number;
     last_page: number;
+}
+
+interface IProductRequestUpdate {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    gtin_code: string;
 }
 
 export class ProductServices {
@@ -91,5 +98,53 @@ export class ProductServices {
         }
 
         return product;
+    }
+
+    async update({ id, name, description, price, gtin_code }: IProductRequestUpdate): Promise<any> {
+        const productRepository = ProductRepository();
+
+        const productToUpdate = await productRepository.findOne({
+            id
+        });
+
+        if (!productToUpdate) {
+            throw new Error("O produto não foi encontrado");
+        }
+        
+        const productAlreadyExists = await productRepository.findOne({
+            gtin_code
+        });
+
+        if (productAlreadyExists && productAlreadyExists.gtin_code !== productToUpdate.gtin_code) {
+            throw new Error("O produto já existe");
+        }
+
+        const product = {
+            name,
+            description,
+            price,
+            gtin_code,
+        };
+
+        const resProduct = await productRepository.update(id, product);
+
+        console.log(resProduct)
+
+        return product
+    }
+
+    async delete(id: string) {
+        const productRepository = ProductRepository();
+        const product = await productRepository.findOne({
+            id
+        });
+
+        if (!product) {
+            throw new Error("O produto não foi encontrado");
+        }
+
+        productRepository.delete(id)
+
+        return;
     }
 }
