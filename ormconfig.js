@@ -11,11 +11,14 @@ if (process.env.NODE_ENV === 'development') {
         "cli": {
             "migrationsDir": "src/database/migrations",
             "entitiesDir": "src/entities"
-        }
+        },
+        "extra": {
+            "decimalNumbers": true
+        },
     }
     return
 }
-if (process.env.NODE_ENV === 'production'){
+if (process.env.NODE_ENV === 'production') {
     module.exports = {
         "type": "mysql",
         "ssl": process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -25,7 +28,10 @@ if (process.env.NODE_ENV === 'production'){
         "cli": {
             "migrationsDir": ["src/database/migrations/"],
             "entitiesDir": "src/entities"
-        }
+        },
+        "extra": {
+            "decimalNumbers": true
+        },
     }
     return
 }
