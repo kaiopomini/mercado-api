@@ -14,7 +14,7 @@ export class CreatePermissionsRoles1636326437356 implements MigrationInterface {
             columnNames: ["permission_id"],
             referencedColumnNames: ["id"],
             referencedTableName: "permissions",
-            name: "fk_permissions_roles_",
+            name: "fk_permissions_roles",
             onDelete: "RESTRICT",
             onUpdate: "CASCADE",
           },

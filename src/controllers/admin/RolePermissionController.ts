@@ -14,7 +14,7 @@ export class RolePermissionController {
     });
 
     return response.status(201).json({
-        succes: true,
+        success: true,
         payload: result,
         message: "Atribuição de permissões aos cargos realizado com sucesso."
     });

@@ -14,7 +14,7 @@ export class CreateUsersRoles1636326437357 implements MigrationInterface {
             columnNames: ["role_id"],
             referencedColumnNames: ["id"],
             referencedTableName: "roles",
-            name: "fk_roles_user",
+            name: "fk_roles_users",
             onDelete: "RESTRICT",
             onUpdate: "CASCADE",
           },

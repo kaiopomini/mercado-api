@@ -22,10 +22,11 @@ const accessControlListController = new AccessControlListController();
 const productController = new ProductController();
 
 // users route
+router.post("/auth", authenticateUserController.store);
 router.post("/users", storeUserSchema, validateRequest, userController.store);
 
 // auth routes
-router.post("/auth", authenticateUserController.store);
+router.get("/me", ensureAuthenticated, authenticateUserController.show);
 
 //admin routes
 router.post("/admin/roles", ensureAuthenticated, roleController.store);

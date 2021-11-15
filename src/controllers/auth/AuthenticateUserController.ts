@@ -12,10 +12,24 @@ class AuthenticateUserController {
             password
         });
 
-        return response.status(201).json({
-            succes: true,
+        return response.status(200).json({
+            success: true,
             payload: token,
             message: "Login realizado com sucesso."
+        });
+    }
+
+    async show(request: Request, response: Response) {
+        const { user_id } = request;
+
+        const authenticateUserService = new AuthenticateServices();
+
+        const user = await authenticateUserService.me(user_id);
+
+        return response.status(200).json({
+            success: true,
+            payload: user,
+            message: "Dados resgatados com sucesso."
         });
     }
 }

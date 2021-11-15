@@ -12,7 +12,7 @@ export class AuthenticateServices {
         const usersRepositories = UserRepository();
 
         // verifica se o email existe
-        const user = await usersRepositories.findOne({ email });
+        const user = await usersRepositories.findOne({email});
 
         if(!user){
             throw new Error("Email ou Senha incorreta");
@@ -27,13 +27,27 @@ export class AuthenticateServices {
 
         // gerar token
         const token = sign({
-            role: user.roles,
-            permissions: user.permissions
+            email: user.email,
+            
         }, process.env.TOKEN_SECRET, {
             subject : user.id,
             expiresIn: "1d"
         });
 
         return token;
+    }
+
+    async me(user_id: string) {
+        const usersRepositories = UserRepository();
+
+        // verifica se o email existe
+        const user = await usersRepositories.findOne({id: user_id}, {relations: ["roles", "permissions"]});
+
+        if(!user){
+            throw new Error("Usuário não logado");
+        }
+
+        delete user.password;
+        return user;
     }
 }

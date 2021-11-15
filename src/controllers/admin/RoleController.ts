@@ -11,7 +11,7 @@ export class RoleController {
         const role = await roleServices.create({ name, description });
 
         return response.status(201).json({
-            succes: true,
+            success: true,
             payload: role,
             message: "Cargo criado com sucesso."
         });

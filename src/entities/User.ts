@@ -24,7 +24,6 @@ class User extends BaseEntity {
     email: string;
 
     @Column()
-    @Exclude({ toPlainOnly: true })
     password: string;
 
     @Column()

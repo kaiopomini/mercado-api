@@ -11,7 +11,7 @@ export class AccessControlListController {
         const accessControl = await accessControlListServices.create({ user_id, permissions, roles});
 
         return response.status(201).json({
-            succes: true,
+            success: true,
             payload: accessControl,
             message: "Cargo criado com sucesso."
         });

@@ -11,7 +11,7 @@ export class PermissionController {
         const permission = await permissionServices.create({ name, description });
 
         return response.status(201).json({
-            succes: true,
+            success: true,
             payload: permission,
             message: "Permissão criada com sucesso."
         });

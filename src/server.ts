@@ -7,9 +7,16 @@ import { router } from "./routes";
 
 import "./database";
 
+
+const allowedOrigins = ['http://localhost:3000'];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
+};
+
 const app = express();
 
-app.use(cors())
+app.use(cors(options));
 
 app.use(express.json());
 
@@ -17,6 +24,7 @@ app.use(router);
 
 // middleware must be after routes
 app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
+    console.log(error)
     if(error instanceof Error) {
         return response.status(400).json({
             success: false,
@@ -30,4 +38,4 @@ app.use((error: Error, request: Request, response: Response, next: NextFunction)
     });
 })
 
-app.listen(process.env.PORT || 3000, () => console.log("server is running..."))
+app.listen(process.env.PORT || 3333, () => console.log("server is running..."))

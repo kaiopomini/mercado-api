@@ -12,7 +12,7 @@ export class UserController {
         const user = await createUserService.create({ name, surname, email, password });
 
         return response.status(201).json({
-            succes: true,
+            success: true,
             payload: user,
             message: "Usuário criado com sucesso."
         });
