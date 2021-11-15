@@ -8,7 +8,7 @@ import { router } from "./routes";
 import "./database";
 
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'https://mercadocampos.netlify.app'];
 
 const options: cors.CorsOptions = {
   origin: allowedOrigins
