@@ -31,7 +31,7 @@ export class AuthenticateServices {
             
         }, process.env.TOKEN_SECRET, {
             subject : user.id,
-            expiresIn: "1d"
+            expiresIn: "15d"
         });
 
         return token;

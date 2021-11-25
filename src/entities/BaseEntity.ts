@@ -1,4 +1,4 @@
-import { PrimaryColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { PrimaryColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 
 export class BaseEntity {
@@ -10,6 +10,9 @@ export class BaseEntity {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at: Date;
 
     constructor() {
         if (!this.id) {

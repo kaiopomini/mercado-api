@@ -2,12 +2,14 @@ import { Request } from "express-serve-static-core";
 import { Product } from "../../entities/Product";
 
 import { ProductRepository } from "../../repositories";
+import { isNumeric } from "../../utils/numberFormat";
 
 interface IProductRequest {
     name: string;
-    description: string;
     price: number;
     gtin_code: string;
+    description?: string;
+    active?: boolean;
 }
 
 interface IProductPaginatedResponse {
@@ -24,10 +26,11 @@ interface IProductRequestUpdate {
     description: string;
     price: number;
     gtin_code: string;
+    active: boolean;
 }
 
 export class ProductServices {
-    async create({ name, description, price, gtin_code }: IProductRequest): Promise<Product> {
+    async create({ name, description, price, gtin_code, active }: IProductRequest): Promise<Product> {
         const productRepository = ProductRepository();
 
         const productAlreadyExists = await productRepository.findOne({
@@ -43,6 +46,7 @@ export class ProductServices {
             description,
             price,
             gtin_code,
+            active
         });
 
         const resProduct = await productRepository.save(product);
@@ -57,14 +61,20 @@ export class ProductServices {
 
         // search
         const { search } = request.query;
+        
+        // busca no codigo de barras quando é digitado apenas numeros
         if (search) {
-            builder.where('products.name LIKE :s OR products.description LIKE :s', { s: `%${search}%` })
-        }
+            builder.where('products.gtin_code LIKE :s OR products.name LIKE :s2', { s: `${search}`, s2: `%${search}%` })
+        } 
 
         // sort
         const sort: any = request.query.sort;
         if (sort) {
-            builder.orderBy('products.price', sort.toUpperCase());
+            builder.orderBy('products.name', sort.toUpperCase());
+            builder.addOrderBy('products.created_at', 'ASC')
+        } else {
+            builder.orderBy('products.name', 'ASC');
+            builder.addOrderBy('products.created_at', 'ASC')
         }
 
         // paginating
@@ -100,7 +110,7 @@ export class ProductServices {
         return product;
     }
 
-    async update({ id, name, description, price, gtin_code }: IProductRequestUpdate): Promise<any> {
+    async update({ id, name, description, price, gtin_code, active }: IProductRequestUpdate): Promise<any> {
         const productRepository = ProductRepository();
 
         const productToUpdate = await productRepository.findOne({
@@ -124,6 +134,7 @@ export class ProductServices {
             description,
             price,
             gtin_code,
+            active
         };
 
         const resProduct = await productRepository.update(id, product);

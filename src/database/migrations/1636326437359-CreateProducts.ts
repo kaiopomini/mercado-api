@@ -17,6 +17,11 @@ export class CreateProducts1636326437359 implements MigrationInterface {
                         type: "varchar",
                     },
                     {
+                        name: "image",
+                        type: "varchar",
+                        isNullable: true,
+                    },
+                    {
                         name: "gtin_code",
                         type: "varchar",
                         isUnique: true,
@@ -24,6 +29,12 @@ export class CreateProducts1636326437359 implements MigrationInterface {
                     {
                         name: "description",
                         type: "varchar",
+                        isNullable: true,
+                    },
+                    {
+                        name: "active",
+                        type: "boolean",
+                        default: false
                     },
                     {
                         name: "price",

@@ -4,11 +4,11 @@ import { ProductServices } from '../../services/admin/ProductServices';
 export class ProductController {
     async store(request: Request, response: Response) {
 
-        const { name, description, price, gtin_code } = request.body;
+        const { name, description, price, gtin_code, active } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.create({ name, description, price, gtin_code });
+        const product = await productServices.create({ name, description, price, gtin_code, active });
 
         return response.status(201).json({
             success: true,
@@ -50,11 +50,11 @@ export class ProductController {
     async update(request: Request, response: Response) {
         
         const { id } = request.params
-        const { name, description, price, gtin_code } = request.body;
+        const { name, description, price, gtin_code, active } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.update({ name, description, price, gtin_code, id });
+        const product = await productServices.update({ name, description, price, gtin_code, id, active });
 
         return response.status(200).json({
             success: true,
