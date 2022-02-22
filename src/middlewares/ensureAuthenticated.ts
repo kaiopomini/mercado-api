@@ -15,6 +15,7 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
         return response.status(401).json({
             success: false,
             message: "O usuário deve estar logado",
+            action: "logout"
         });
     }
 
@@ -32,6 +33,7 @@ export function ensureAuthenticated(request: Request, response: Response, next: 
         return response.status(401).json({
             success: false,
             message: "O usuário deve estar logado",
+            action: "logout",
         });
     }
 } 

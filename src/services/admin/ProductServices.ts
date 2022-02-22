@@ -2,11 +2,15 @@ import { Request } from "express-serve-static-core";
 import { Product } from "../../entities/Product";
 
 import { ProductRepository } from "../../repositories";
-import { isNumeric } from "../../utils/numberFormat";
+
 
 interface IProductRequest {
     name: string;
     price: number;
+    base_price: number;
+    image: string;
+    controlled_inventory: boolean;
+    quantity: number;
     gtin_code: string;
     description?: string;
     active?: boolean;
@@ -27,10 +31,14 @@ interface IProductRequestUpdate {
     price: number;
     gtin_code: string;
     active: boolean;
+    base_price: number;
+    image: string;
+    controlled_inventory: boolean;
+    quantity: number;
 }
 
 export class ProductServices {
-    async create({ name, description, price, gtin_code, active }: IProductRequest): Promise<Product> {
+    async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity }: IProductRequest): Promise<Product> {
         const productRepository = ProductRepository();
 
         const productAlreadyExists = await productRepository.findOne({
@@ -46,8 +54,14 @@ export class ProductServices {
             description,
             price,
             gtin_code,
-            active
+            active,
+            base_price,
+            image,
+            controlled_inventory,
+            quantity
         });
+
+        console.log('product service: ', product)
 
         const resProduct = await productRepository.save(product);
 
@@ -71,10 +85,10 @@ export class ProductServices {
         const sort: any = request.query.sort;
         if (sort) {
             builder.orderBy('products.name', sort.toUpperCase());
-            builder.addOrderBy('products.created_at', 'ASC')
+            builder.addOrderBy('products.created_at', 'DESC')
         } else {
             builder.orderBy('products.name', 'ASC');
-            builder.addOrderBy('products.created_at', 'ASC')
+            builder.addOrderBy('products.created_at', 'DESC')
         }
 
         // paginating
@@ -104,13 +118,13 @@ export class ProductServices {
         });
 
         if (!product) {
-            throw new Error("O produto não encontrado");
+            throw new Error("O produto não foi encontrado");
         }
 
         return product;
     }
 
-    async update({ id, name, description, price, gtin_code, active }: IProductRequestUpdate): Promise<any> {
+    async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity }: IProductRequestUpdate): Promise<any> {
         const productRepository = ProductRepository();
 
         const productToUpdate = await productRepository.findOne({
@@ -134,7 +148,11 @@ export class ProductServices {
             description,
             price,
             gtin_code,
-            active
+            active,
+            base_price,
+            image,
+            controlled_inventory,
+            quantity
         };
 
         const resProduct = await productRepository.update(id, product);

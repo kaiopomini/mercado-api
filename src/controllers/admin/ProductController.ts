@@ -1,14 +1,14 @@
-import {Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ProductServices } from '../../services/admin/ProductServices';
 
 export class ProductController {
     async store(request: Request, response: Response) {
 
-        const { name, description, price, gtin_code, active } = request.body;
+        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.create({ name, description, price, gtin_code, active });
+        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity });
 
         return response.status(201).json({
             success: true,
@@ -21,7 +21,7 @@ export class ProductController {
 
         const productServices = new ProductServices();
 
-        const {data, ...rest} = await productServices.getAll(request);
+        const { data, ...rest } = await productServices.getAll(request);
 
         return response.status(200).json({
             success: true,
@@ -37,24 +37,24 @@ export class ProductController {
 
         const productServices = new ProductServices();
 
-        const produto = await productServices.getOne(id);
+        const product = await productServices.getOne(id);
 
         return response.status(200).json({
             success: true,
-            payload: produto,
+            payload: product,
             message: "Requisição realizada com sucesso.",
-            
+
         });
     }
 
     async update(request: Request, response: Response) {
-        
-        const { id } = request.params
-        const { name, description, price, gtin_code, active } = request.body;
+
+        const { id } = request.params;
+        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.update({ name, description, price, gtin_code, id, active });
+        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity });
 
         return response.status(200).json({
             success: true,
@@ -69,12 +69,12 @@ export class ProductController {
 
         const productServices = new ProductServices();
 
-        const produto = await productServices.delete(id);
+        const product = await productServices.delete(id);
 
         return response.status(200).json({
             success: true,
             message: "Produto excluído com sucesso.",
-            
+
         });
     }
 }

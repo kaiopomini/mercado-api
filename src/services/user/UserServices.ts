@@ -1,5 +1,4 @@
 import { hash } from "bcryptjs";
-import { User } from "../../entities/User";
 
 import { UserRepository } from "../../repositories";
 
@@ -8,7 +7,6 @@ interface IUserRequest {
     surname: string;
     email: string;
     password: string;
-    
 }
 
 interface IUserResponse {
@@ -32,6 +30,15 @@ export class UserServices {
 
         if (userAlreadyExists) {
             throw new Error("O usuário já existe");
+        }
+
+        const userDeleted = await usersRepository.findOne({
+            where: { email },
+            withDeleted: true
+        });
+
+        if(userDeleted) {
+            throw new Error("O usuário foi excluído recentemente, contate o administrador para reativa-lo");
         }
 
         const passwordHash = await hash(password, 8)
