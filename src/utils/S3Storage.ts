@@ -16,12 +16,12 @@ class S3Storage {
     });
   }
 
-  async saveFile(filename: string): Promise<String>{
+  async saveFile(filename: string): Promise<String> {
     const originalPath = path.resolve(multerConfig.directory, filename)
-    
+
     const ContentType = mime.getType(originalPath);
 
-    if(!ContentType) {
+    if (!ContentType) {
       throw new Error('Arquivo não encontrado')
     }
 
@@ -33,14 +33,15 @@ class S3Storage {
       Body: fileContent,
       ContentType,
     }
-
-    await this.client.upload(uploadParams).promise()
-
-    const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/products/images/${filename}`
-    
-    await fs.promises.unlink(originalPath);
-
-    return url
+    try {
+      await this.client.upload(uploadParams).promise()
+      const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/products/images/${filename}`
+      return url
+    } catch (error) {
+      throw new Error("Erro ao salvar imagem");
+    } finally {
+      await fs.promises.unlink(originalPath);
+    }
   }
 }
 
