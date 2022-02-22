@@ -7,7 +7,7 @@ export class ProductImageServices {
     try {
      res = await s3Storage.saveFile(file.filename)
     } catch {
-      throw new Error("Failed to upload file");
+      throw new Error("Erro ao salvar imagem");
     } 
     
     return res;

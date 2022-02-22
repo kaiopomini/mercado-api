@@ -34,7 +34,7 @@ class S3Storage {
       ContentType,
     }
 
-    this.client.upload(uploadParams).promise()
+    await this.client.upload(uploadParams).promise()
 
     const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/products/images/${filename}`
     
