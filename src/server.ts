@@ -2,6 +2,9 @@ import "reflect-metadata";
 import express, {Request, Response, NextFunction} from "express";
 import "express-async-errors";
 import cors from "cors";
+import { initializeTransactionalContext } from 'typeorm-transactional-cls-hooked';
+
+initializeTransactionalContext()
 
 import { router } from "./routes";
 

@@ -4,11 +4,11 @@ import { CostumerServices } from '../../services/admin/CostumerServices';
 export class CostumerController {
     async store(request: Request, response: Response) {
 
-        const { name, surname, email, password } = request.body;
+        const { name, surname, email, password, cpf, gender, birth_date } = request.body;
 
         const customerServices = new CostumerServices();
 
-        const customer = await customerServices.create({ name, surname, email, password  });
+        const customer = await customerServices.create({ name, surname, email, password, cpf, gender, birth_date });
 
         return response.status(201).json({
             success: true,

@@ -1,27 +1,39 @@
 import { Role } from "../entities/Role";
 import { User } from "../entities/User";
-import { getRepository } from "typeorm";
+import { getCustomRepository, getRepository } from "typeorm";
 import { Product } from "../entities/Product";
 import { Permission } from "../entities/Permission";
 import { UserInfo } from "../entities/UserInfo";
 
+import { EntityRepository } from 'typeorm';
+import { BaseRepository } from 'typeorm-transactional-cls-hooked';
 
+@EntityRepository(User)
+class UserRepositoryClass extends BaseRepository<User> {}
 export const UserRepository = () => {
-  return getRepository(User);
+  return getCustomRepository(UserRepositoryClass);
 };
 
+@EntityRepository(Role)
+class RoleRepositoryClass extends BaseRepository<Role> {}
 export const RoleRepository = () => {
-  return getRepository(Role);
+  return getCustomRepository(RoleRepositoryClass);
 };
 
+@EntityRepository(Permission)
+class PermissionRepositoryClass extends BaseRepository<Permission> {}
 export const PermissionRepository = () => {
-  return getRepository(Permission);
+  return getCustomRepository(PermissionRepositoryClass);
 };
 
+@EntityRepository(Product)
+class ProductRepositoryClass extends BaseRepository<Product> {}
 export const ProductRepository = () => {
-  return getRepository(Product);
+  return getCustomRepository(ProductRepositoryClass);
 };
 
+@EntityRepository(UserInfo)
+class UserInfoRepositoryClass extends BaseRepository<UserInfo> {}
 export const UserInfoRepository = () => {
-    return getRepository(UserInfo);
-  };
+    return getCustomRepository(UserInfoRepositoryClass);
+};

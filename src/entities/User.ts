@@ -1,9 +1,10 @@
 import { Exclude } from "class-transformer";
-import {Entity, Column, JoinTable, ManyToMany } from "typeorm";
+import {Entity, Column, JoinTable, ManyToMany, OneToOne, JoinColumn } from "typeorm";
 
 import { BaseEntity } from "./BaseEntity";
 import { Permission } from "./Permission";
 import { Role } from "./Role";
+import { UserInfo } from "./UserInfo";
 
 @Entity("users")
 class User extends BaseEntity {
@@ -26,7 +27,9 @@ class User extends BaseEntity {
     @Column()
     password: string;
 
-    @Column()
+    @Column({
+      nullable: true,
+    })
     avatar: string;
 
     @ManyToMany(() => Role)
@@ -45,12 +48,6 @@ class User extends BaseEntity {
     })
     permissions: Permission[];
 
-    constructor() {
-        super()
-        if (!this.avatar) {
-            this.avatar = 'default';
-        }
-    }
 }
 
 export { User };

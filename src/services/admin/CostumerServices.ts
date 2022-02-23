@@ -1,13 +1,18 @@
 import { Request } from "express-serve-static-core";
 import { hash } from "bcryptjs";
-import { UserRepository } from "../../repositories";
+import { UserRepository, UserInfoRepository } from "../../repositories";
 import { User } from "../../entities/User";
+import { UserInfo } from "../../entities/UserInfo";
+import { runOnTransactionCommit, Transactional } from "typeorm-transactional-cls-hooked";
 
 interface IUserRequest {
     name: string;
     surname: string;
     email: string;
     password: string;
+    cpf?: string;
+    gender?: string;
+    birth_date?: Date;
 }
 
 interface IUserResponse {
@@ -35,8 +40,11 @@ interface ICostumerRequestUpdate {
 }
 
 export class CostumerServices {
-    async create({ name, surname, email, password }: IUserRequest): Promise<IUserResponse> {
+
+    @Transactional()
+    async create({ name, surname, email, password, cpf, gender, birth_date }: IUserRequest): Promise<IUserResponse> {
         const userRepository = UserRepository();
+        const userInfoRepository = UserInfoRepository();
 
         if (!email) {
             throw Error("Email incorreto");
@@ -64,17 +72,28 @@ export class CostumerServices {
             password: passwordHash,
         });
 
-        if(userDeleted) {
-            await userRepository.update(userDeleted.id, {name, surname, email, deleted_at: null})
+        if (userDeleted) {
+            await userRepository.update(userDeleted.id, { name, surname, email, deleted_at: null })
             const resUser = { id: userDeleted.id, name, surname, email }
             return resUser
         }
 
+
+
         const { id } = await userRepository.save(user);
+
+        const userInfo = userInfoRepository.create({
+            cpf,
+            gender,
+            birth_date,
+            user: id,
+        })
+
+        const resUserInfo = await userInfoRepository.save(userInfo);
 
         const resUser = { id, name, surname, email }
 
-        return resUser
+        return { ...resUser, ...resUserInfo }
     }
 
     async getAll(request: Request): Promise<IUserPaginatedResponse> {
@@ -92,7 +111,7 @@ export class CostumerServices {
         if (search) {
             builder.andWhere('costumers.id LIKE :s OR costumers.name LIKE :s2 OR costumers.email LIKE :s3', { s: `${search}`, s2: `%${search}%`, s3: `${search}%` })
         }
-        
+
         // sort
         const sort: any = request.query.sort;
         if (sort) {
@@ -124,14 +143,30 @@ export class CostumerServices {
     }
 
     async getOne(id: string): Promise<User> {
+
+        // const user = await usersRepositories.findOne({id: user_id}, {relations: ["roles", "permissions"]});
+
+        // if(!user){
+        //     throw new Error("Usuário não logado");
+        // }
+
+        // delete user.password;
+        // return user;
         const userRepository = UserRepository();
-        const costumer = await userRepository.findOne({
-            id
-        });
+
+        const builder = userRepository.createQueryBuilder('costumers');
+        builder.select(['costumers.id', 'costumers.name', 'costumers.surname', 'costumers.email', 'costumers.avatar'])
+        builder.leftJoinAndSelect('costumers.user_info', 'user_info')
+        builder.leftJoin('costumers.roles', 'roles')
+        builder.where("roles.name IS NULL or roles.name = ' '")
+        // builder.andWhere(`costumers.id = ${id}`)
+        // const costumer = await userRepository.findOne({ id }, { relations: ['user_info'] });
+        const costumer = await builder.getOneOrFail();
 
         if (!costumer) {
             throw new Error("O cliente não foi encontrado");
         }
+        delete costumer.password;
 
         return costumer;
     }
@@ -167,7 +202,7 @@ export class CostumerServices {
         await userRepository.update(id, costumer);
 
         const resCostumer = { id, name, surname, email }
-        
+
         console.log(resCostumer)
 
         return costumer

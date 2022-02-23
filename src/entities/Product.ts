@@ -7,7 +7,9 @@ export class Product extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   description: string;
 
   @Column()
@@ -24,7 +26,9 @@ export class Product extends BaseEntity {
   })
   controlled_inventory: boolean;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   image: string;
 
   @Column({
@@ -47,9 +51,7 @@ export class Product extends BaseEntity {
 
   constructor() {
     super()
-    if (!this.image) {
-      this.image = 'default';
-    }
+
     if (!this.active) {
       this.active = false;
     }

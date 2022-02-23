@@ -3,18 +3,15 @@ import {Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, JoinC
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
 
-@Entity("user_info")
+@Entity("users_info")
 export class UserInfo extends BaseEntity{
 
     @PrimaryColumn()
     readonly id: string;
 
-    @Column()
-    user_id: string;
-
-    @JoinColumn({name: "user_id"})
-    @OneToOne(() => User)
-    user: User;
+    @OneToOne(type => User, user_info => UserInfo)
+    @JoinColumn()
+    user: string;
 
     @Column()
     cpf: string;
