@@ -144,6 +144,7 @@ export class ProductServices {
         }
 
         const product = {
+            id,
             name,
             description,
             price,
@@ -155,7 +156,7 @@ export class ProductServices {
             quantity
         };
 
-        const resProduct = await productRepository.update(id, product);
+        const resProduct = await productRepository.save(product);
 
         console.log(resProduct)
 

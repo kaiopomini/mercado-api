@@ -15,7 +15,7 @@ class User extends BaseEntity {
     surname: string;
     
     @Column({ default: false })
-    valiteded_email: Boolean;
+    validated_email: Boolean;
 
     @Column()
     email: string;

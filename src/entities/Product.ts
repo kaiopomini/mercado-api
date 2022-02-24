@@ -12,10 +12,14 @@ export class Product extends BaseEntity {
   })
   description: string;
 
-  @Column()
+  @Column({
+    type: 'real'
+  })
   price: number;
 
-  @Column()
+  @Column({
+    type: 'real'
+  })
   base_price: number;
 
   @Column()
