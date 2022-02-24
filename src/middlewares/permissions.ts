@@ -1,25 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { UserRepository } from "../repositories";
-
 
 export function can(permissionsRoutes: string[]) {
     return async (request: Request, response: Response, next: NextFunction) => {
-        const { user_id } = request;
+        const { user_permissions } = request;
 
-        const user = await UserRepository()
-            .findOne({
-                where: { id: user_id },
-                relations: ["permissions"]
-            })
-
-        if (!user) {
-            return response.status(401).json({
-                success: false,
-                message: "Usuário não encontrado"
-            })
-        }
-
-        const permissionExists = user.permissions
+        const permissionExists = user_permissions
             .map(permission => permission.name)
             .some(permission => permissionsRoutes.includes(permission))
 
@@ -36,22 +21,9 @@ export function can(permissionsRoutes: string[]) {
 
 export function is(rolesRoutes: string[]) {
     return async (request: Request, response: Response, next: NextFunction) => {
-        const { user_id } = request;
+        const { user_roles } = request;
 
-        const user = await UserRepository()
-            .findOne({
-                where: { id: user_id },
-                relations: ["roles"]
-            })
-
-        if (!user) {
-            return response.status(401).json({
-                success: false,
-                message: "Usuário não encontrado"
-            })
-        }
-
-        const roleExists = user.roles
+        const roleExists = user_roles
             .map(role => role.name)
             .some(role => rolesRoutes.includes(role))
 

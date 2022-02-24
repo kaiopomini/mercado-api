@@ -4,7 +4,7 @@ import { adminRoutes } from "./admin.routes";
 
 import multer from 'multer';
 import multerConfig from '../config/multer';
-import { is } from "../middlewares/permissions";
+import { can, is } from "../middlewares/permissions";
 
 const router = Router();
 const upload = multer(multerConfig)

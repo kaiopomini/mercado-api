@@ -27,11 +27,13 @@ app.use(router);
 
 // middleware must be after routes
 app.use((error: Error, request: Request, response: Response, next: NextFunction) => {
-    console.log(error)
+    console.log('ERROR NAME: ', error.name)
+    console.log('ERROR MESSAGE: ', error.message)
+    console.log('ERROR STACK: ', error.stack || null)
     if(error instanceof Error) {
         return response.status(400).json({
             success: false,
-            message: error.message,
+            message: "Não foi possível realizar a operação solicitada.",
         });
     }
 

@@ -4,7 +4,6 @@ import {Entity, Column, JoinTable, ManyToMany, OneToOne, JoinColumn } from "type
 import { BaseEntity } from "./BaseEntity";
 import { Permission } from "./Permission";
 import { Role } from "./Role";
-import { UserInfo } from "./UserInfo";
 
 @Entity("users")
 class User extends BaseEntity {
@@ -14,12 +13,9 @@ class User extends BaseEntity {
 
     @Column()
     surname: string;
-
-    @Column({ default: false })
-    deleted: Boolean;
     
     @Column({ default: false })
-    valid_email: Boolean;
+    valiteded_email: Boolean;
 
     @Column()
     email: string;
@@ -31,6 +27,21 @@ class User extends BaseEntity {
       nullable: true,
     })
     avatar: string;
+
+    @Column({
+      nullable: true,
+    })
+    cpf: string;
+
+    @Column({
+      nullable: true,
+    })
+    gender: string;
+
+    @Column({
+      nullable: true,
+    })
+    birth_date: Date;
 
     @ManyToMany(() => Role)
     @JoinTable({

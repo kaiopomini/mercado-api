@@ -1,9 +1,8 @@
 import { Request } from "express-serve-static-core";
 import { hash } from "bcryptjs";
-import { UserRepository, UserInfoRepository } from "../../repositories";
+import { UserRepository } from "../../repositories";
 import { User } from "../../entities/User";
-import { UserInfo } from "../../entities/UserInfo";
-import { runOnTransactionCommit, Transactional } from "typeorm-transactional-cls-hooked";
+import { Transactional } from "typeorm-transactional-cls-hooked";
 
 interface IUserRequest {
     name: string;
@@ -22,7 +21,6 @@ interface IUserResponse {
     id: string;
 }
 
-
 interface IUserPaginatedResponse {
     data: User[];
     total: number;
@@ -37,14 +35,15 @@ interface ICostumerRequestUpdate {
     surname: string;
     email: string;
     password: string;
+    cpf?: string;
+    gender?: string;
+    birth_date?: Date;
 }
 
 export class CostumerServices {
 
-    @Transactional()
     async create({ name, surname, email, password, cpf, gender, birth_date }: IUserRequest): Promise<IUserResponse> {
         const userRepository = UserRepository();
-        const userInfoRepository = UserInfoRepository();
 
         if (!email) {
             throw Error("Email incorreto");
@@ -70,6 +69,9 @@ export class CostumerServices {
             surname,
             email,
             password: passwordHash,
+            cpf,
+            gender,
+            birth_date,
         });
 
         if (userDeleted) {
@@ -78,29 +80,18 @@ export class CostumerServices {
             return resUser
         }
 
+        const newUser = await userRepository.save(user);
+        
+        delete newUser.password
 
-
-        const { id } = await userRepository.save(user);
-
-        const userInfo = userInfoRepository.create({
-            cpf,
-            gender,
-            birth_date,
-            user: id,
-        })
-
-        const resUserInfo = await userInfoRepository.save(userInfo);
-
-        const resUser = { id, name, surname, email }
-
-        return { ...resUser, ...resUserInfo }
+        return { ...newUser }
     }
 
     async getAll(request: Request): Promise<IUserPaginatedResponse> {
         const userRepository = UserRepository();
 
         const builder = userRepository.createQueryBuilder('costumers');
-        builder.select(['costumers.id', 'costumers.name', 'costumers.surname', 'costumers.email', 'costumers.avatar'])
+        builder.select(['costumers'])
         builder.leftJoin('costumers.roles', 'roles')
         builder.where("roles.name IS NULL or roles.name = ' '")
 
@@ -131,6 +122,8 @@ export class CostumerServices {
 
         const data = await builder.getMany();
 
+        data.forEach(item => delete item.password)
+
         const result = {
             data,
             total,
@@ -155,8 +148,7 @@ export class CostumerServices {
         const userRepository = UserRepository();
 
         const builder = userRepository.createQueryBuilder('costumers');
-        builder.select(['costumers.id', 'costumers.name', 'costumers.surname', 'costumers.email', 'costumers.avatar'])
-        builder.leftJoinAndSelect('costumers.user_info', 'user_info')
+        builder.select(['costumers'])
         builder.leftJoin('costumers.roles', 'roles')
         builder.where("roles.name IS NULL or roles.name = ' '")
         // builder.andWhere(`costumers.id = ${id}`)
@@ -171,7 +163,7 @@ export class CostumerServices {
         return costumer;
     }
 
-    async update({ id, name, surname, email, password }: ICostumerRequestUpdate): Promise<any> {
+    async update({ id, name, surname, email, password, cpf, gender, birth_date }: ICostumerRequestUpdate): Promise<any> {
         const userRepository = UserRepository();
 
         const costumerToUpdate = await userRepository.findOne({
@@ -193,19 +185,23 @@ export class CostumerServices {
         const passwordHash = await hash(password, 8)
 
         const costumer = {
+            id,
             name,
             surname,
             email,
             password: passwordHash,
+            cpf,
+            gender,
+            birth_date,
         };
 
-        await userRepository.update(id, costumer);
+        const resCostumer = await userRepository.save(costumer);
 
-        const resCostumer = { id, name, surname, email }
+        delete resCostumer.password
 
         console.log(resCostumer)
 
-        return costumer
+        return resCostumer
     }
 
     async delete(id: string) {
