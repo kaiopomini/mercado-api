@@ -16,7 +16,7 @@ interface IUserPaginatedResponse {
 export class CustomerServices {
 
     @Transactional()
-    async create({ name, surname, email, password, cpf, birth_date, phones, address }: User): Promise<User> {
+    async create({ name, surname, email, password, cpf, birth_date, phones, address, avatar }: User): Promise<User> {
         const userRepository = UserRepository();
         const addressRepository = AddressRepository();
         const phoneRepository = PhoneRepository();
@@ -46,6 +46,7 @@ export class CustomerServices {
             const passwordHash = await hash(password, 8);
 
             const user = userRepository.create({
+                avatar,
                 name,
                 surname,
                 email,
@@ -160,8 +161,10 @@ export class CustomerServices {
     }
 
     @Transactional()
-    async update({ id, name, surname, email, password, cpf, birth_date, phones, address }: User): Promise<any> {
+    async update({ id, name, surname, email, password, cpf, birth_date, phones, address, avatar }: User): Promise<any> {
         const userRepository = UserRepository();
+        const addressRepository = AddressRepository();
+        const phoneRepository = PhoneRepository();
 
         const builder = userRepository.createQueryBuilder('customers');
         builder.select(['customers'])
@@ -201,17 +204,39 @@ export class CustomerServices {
 
         const customer = {
             id,
+            avatar,
             name,
             surname,
             email,
             password: passwordHash,
             cpf,
             birth_date,
-            phones,
-            address
         };
 
         const resCustomer = await userRepository.save(customer);
+
+        const phonesTo = phones?.map(phone => {
+            return phoneRepository.create({
+                ...phone,
+                user: customer
+            })
+        })
+
+        phonesTo?.forEach(async phone => {
+            try {
+                await phoneRepository.save(phone);
+            } catch (error) {
+
+            }
+
+        })
+
+        const addressTo = addressRepository.create({
+            ...address,
+            user: customer
+        })
+
+        await addressRepository.save(addressTo)
 
         delete resCustomer.password
 
