@@ -12,6 +12,7 @@ interface IProductPaginatedResponse {
 export class ProductServices {
     async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
+        console.log(quantity_type)
 
         const productAlreadyExists = await productRepository.findOne({
             gtin_code
@@ -97,6 +98,7 @@ export class ProductServices {
 
     async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
+        console.log(quantity_type)
 
         const productToUpdate = await productRepository.findOne({
             id

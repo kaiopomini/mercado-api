@@ -5,11 +5,11 @@ import { ProductServices } from '../../services/admin/ProductServices';
 export class ProductController {
     async store(request: Request, response: Response) {
 
-        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } = request.body;
+        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } as Product);
+        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } as Product);
 
         return response.status(201).json({
             success: true,
@@ -51,11 +51,11 @@ export class ProductController {
     async update(request: Request, response: Response) {
 
         const { id } = request.params;
-        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } = request.body;
+        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } = request.body;
 
         const productServices = new ProductServices();
 
-        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } as Product);
+        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } as Product);
 
         return response.status(200).json({
             success: true,
