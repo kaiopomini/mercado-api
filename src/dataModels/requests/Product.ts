@@ -2,6 +2,7 @@ import { body } from "express-validator";
 
 export const storeProductSchema = [
     body('name').exists({ checkFalsy: true }).withMessage('O campo nome é obrigatório'),
+    body('quantity_type').exists({ checkFalsy: true }).withMessage('O campo nome é obrigatório'),
     body('price').isNumeric().withMessage('Informe um preço válido'),
     body('price')
         .custom( value => {

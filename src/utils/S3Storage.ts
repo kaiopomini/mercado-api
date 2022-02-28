@@ -38,7 +38,7 @@ class S3Storage {
       const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/products/images/${filename}`
       return url
     } catch (error) {
-      throw new Error("Erro ao salvar imagem");
+      throw new Error("MESSAGE:Erro ao salvar imagem");
     } finally {
       await fs.promises.unlink(originalPath);
     }

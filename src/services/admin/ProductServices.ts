@@ -2,20 +2,6 @@ import { Request } from "express-serve-static-core";
 import { Product } from "../../entities/Product";
 
 import { ProductRepository } from "../../repositories";
-
-
-interface IProductRequest {
-    name: string;
-    price: number;
-    base_price: number;
-    image: string;
-    controlled_inventory: boolean;
-    quantity: number;
-    gtin_code: string;
-    description?: string;
-    active?: boolean;
-}
-
 interface IProductPaginatedResponse {
     data: Product[];
     total: number;
@@ -23,22 +9,8 @@ interface IProductPaginatedResponse {
     per_page: number;
     last_page: number;
 }
-
-interface IProductRequestUpdate {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    gtin_code: string;
-    active: boolean;
-    base_price: number;
-    image: string;
-    controlled_inventory: boolean;
-    quantity: number;
-}
-
 export class ProductServices {
-    async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity }: IProductRequest): Promise<Product> {
+    async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
 
         const productAlreadyExists = await productRepository.findOne({
@@ -46,7 +18,7 @@ export class ProductServices {
         });
 
         if (productAlreadyExists) {
-            throw new Error("O produto já existe");
+            throw new Error("MESSAGE:O produto já existe");
         }
 
         const product = productRepository.create({
@@ -58,10 +30,9 @@ export class ProductServices {
             base_price,
             image,
             controlled_inventory,
-            quantity
+            quantity,
+            quantity_type
         });
-
-        console.log('product service: ', product)
 
         const resProduct = await productRepository.save(product);
 
@@ -118,13 +89,13 @@ export class ProductServices {
         });
 
         if (!product) {
-            throw new Error("O produto não foi encontrado");
+            throw new Error("MESSAGE:O produto não foi encontrado");
         }
 
         return product;
     }
 
-    async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity }: IProductRequestUpdate): Promise<any> {
+    async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
 
         const productToUpdate = await productRepository.findOne({
@@ -132,7 +103,7 @@ export class ProductServices {
         });
 
         if (!productToUpdate) {
-            throw new Error("O produto não foi encontrado");
+            throw new Error("MESSAGE:O produto não foi encontrado");
         }
         
         const productAlreadyExists = await productRepository.findOne({
@@ -140,7 +111,7 @@ export class ProductServices {
         });
 
         if (productAlreadyExists && productAlreadyExists.gtin_code !== productToUpdate.gtin_code) {
-            throw new Error("O produto já existe");
+            throw new Error("MESSAGE:O produto já existe");
         }
 
         const product = {
@@ -153,14 +124,13 @@ export class ProductServices {
             base_price,
             image,
             controlled_inventory,
-            quantity
+            quantity,
+            quantity_type
         };
 
         const resProduct = await productRepository.save(product);
 
-        console.log(resProduct)
-
-        return product
+        return resProduct;
     }
 
     async delete(id: string) {
@@ -170,7 +140,7 @@ export class ProductServices {
         });
 
         if (!product) {
-            throw new Error("O produto não foi encontrado");
+            throw new Error("MESSAGE:O produto não foi encontrado");
         }
 
         productRepository.delete(id)

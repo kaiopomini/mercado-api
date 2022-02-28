@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Product } from '../../entities/Product';
 import { ProductServices } from '../../services/admin/ProductServices';
 
 export class ProductController {
@@ -8,7 +9,7 @@ export class ProductController {
 
         const productServices = new ProductServices();
 
-        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity });
+        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } as Product);
 
         return response.status(201).json({
             success: true,
@@ -54,7 +55,7 @@ export class ProductController {
 
         const productServices = new ProductServices();
 
-        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity });
+        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity } as Product);
 
         return response.status(200).json({
             success: true,

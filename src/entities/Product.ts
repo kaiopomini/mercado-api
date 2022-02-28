@@ -25,6 +25,9 @@ export class Product extends BaseEntity {
   @Column()
   quantity: number;
 
+  @Column()
+  quantity_type: string;
+
   @Column({
     default: false
   })

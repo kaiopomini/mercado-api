@@ -11,7 +11,7 @@ export class PermissionServices {
         const repo =  PermissionRepository();
 
         if (await repo.findOne({ name })) {
-            throw new Error("Permissão já existe")
+            throw new Error("MESSAGE:Permissão já existe")
         }
 
         const permission = repo.create({name, description});

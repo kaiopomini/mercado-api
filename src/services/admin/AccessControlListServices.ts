@@ -17,7 +17,7 @@ export class AccessControlListServices {
         const user = await repo.findOne(user_id);
 
         if (!user) {
-            throw new Error("Usuário não existe!");
+            throw new Error("MESSAGE:Usuário não existe!");
         }
 
         const permissionsExists = await PermissionRepository().findByIds(permissions);

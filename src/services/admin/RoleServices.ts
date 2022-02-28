@@ -11,7 +11,7 @@ export class RoleServices {
         const repo =  RoleRepository();
 
         if (await repo.findOne({ name })) {
-            throw new Error("Role já existe")
+            throw new Error("MESSAGE:Role já existe")
         }
 
         const role = repo.create({name, description});

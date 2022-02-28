@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const storeCostumerSchema = [
+export const storeCustomerSchema = [
     body('name').exists({ checkFalsy: true }).withMessage('O campo nome é obrigatório'),
     body('surname').exists({ checkFalsy: true }).withMessage('O campo sobrenome é um campo obrigatório'),
     body('email').isEmail().withMessage('Insira um email válido'),
@@ -9,10 +9,11 @@ export const storeCostumerSchema = [
     body('password').isStrongPassword({ minLength: 0, minLowercase: 0, minNumbers: 1, minSymbols: 0, minUppercase: 0 }).withMessage('A senha deve ter pelomenos 1 número'),
     body('password').isStrongPassword({ minLength: 0, minLowercase: 0, minNumbers: 0, minSymbols: 1, minUppercase: 0 }).withMessage('A senha deve ter pelomenos 1 carectere especial'),
     body('password').isStrongPassword({ minLength: 0, minLowercase: 0, minNumbers: 0, minSymbols: 0, minUppercase: 1 }).withMessage('A senha deve ter pelomenos 1 letra minúscula'),
+    // body('address').isObject()
     
 ];
 
-export const updateCostumerSchema = [
+export const updateCustomerSchema = [
     body('name').exists({ checkFalsy: true }).withMessage('O campo nome é obrigatório'),
     body('surname').exists({ checkFalsy: true }).withMessage('O campo sobrenome é um campo obrigatório'),
     body('email').isEmail().withMessage('Insira um email válido'),

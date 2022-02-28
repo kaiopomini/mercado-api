@@ -15,14 +15,14 @@ export class AuthenticateServices {
         const user = await usersRepositories.findOne({email});
 
         if(!user){
-            throw new Error("Email ou Senha incorreta");
+            throw new Error("MESSAGE:Email ou Senha incorreta");
         }
 
         // verifica se a senha está correta
         const passwordMatch = await compare(password, user.password);
 
         if(!passwordMatch) {
-            throw new Error("Email ou Senha incorreta");
+            throw new Error("MESSAGE:Email ou Senha incorreta");
         }
 
         // gerar token
@@ -44,7 +44,7 @@ export class AuthenticateServices {
         const user = await usersRepositories.findOne({id: user_id}, {relations: ["roles", "permissions"]});
 
         if(!user){
-            throw new Error("Usuário não logado");
+            throw new Error("MESSAGE:Usuário não logado");
         }
 
         delete user.password;

@@ -16,7 +16,7 @@ export class RolePermissionServices {
     const role = await repo.findOne(role_id);
 
     if (!role) {
-      throw new Error("Role does not exists!");
+      throw new Error("MESSAGE:Role does not exists!");
     }
 
     const permissionsExists = await PermissionRepository().findByIds(

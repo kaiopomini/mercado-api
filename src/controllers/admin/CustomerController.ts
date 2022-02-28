@@ -1,14 +1,16 @@
 import {Request, Response } from 'express';
-import { CostumerServices } from '../../services/admin/CostumerServices';
+import { User } from '../../entities/User';
+import { CustomerServices } from '../../services/admin/CustomerServices';
 
-export class CostumerController {
+
+export class CustomerController {
     async store(request: Request, response: Response) {
 
-        const { name, surname, email, password, cpf, gender, birth_date } = request.body;
+        const { name, surname, email, password, cpf, address, phones, birth_date, avatar  }  = request.body;
 
-        const customerServices = new CostumerServices();
+        const customerServices = new CustomerServices();
 
-        const customer = await customerServices.create({ name, surname, email, password, cpf, gender, birth_date });
+        const customer = await customerServices.create({avatar, name, surname, email, password, cpf, address, phones, birth_date } as User);
 
         return response.status(201).json({
             success: true,
@@ -19,7 +21,7 @@ export class CostumerController {
 
     async index(request: Request, response: Response) {
 
-        const customerServices = new CostumerServices();
+        const customerServices = new CustomerServices();
 
         const {data, ...rest} = await customerServices.getAll(request);
 
@@ -35,7 +37,7 @@ export class CostumerController {
 
         const { id } = request.params
 
-        const customerServices = new CostumerServices();
+        const customerServices = new CustomerServices();
 
         const customer = await customerServices.getOne(id);
 
@@ -50,11 +52,11 @@ export class CostumerController {
     async update(request: Request, response: Response) {
         
         const { id } = request.params
-        const { name, surname, email, password, cpf, gender, birth_date  } = request.body;
+        const { name, surname, email, password, cpf, address, phones, birth_date, avatar  }  = request.body;
 
-        const customerServices = new CostumerServices();
+        const customerServices = new CustomerServices();
 
-        const customer = await customerServices.update({ id, name, surname, email, password, cpf, gender, birth_date  });
+        const customer = await customerServices.update({ id, avatar, name, surname, email, password, cpf, address, phones, birth_date } as User);
 
         return response.status(200).json({
             success: true,
@@ -67,7 +69,7 @@ export class CostumerController {
 
         const { id } = request.params
 
-        const customerServices = new CostumerServices();
+        const customerServices = new CustomerServices();
 
         const customer = await customerServices.delete(id);
 

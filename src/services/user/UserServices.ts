@@ -21,7 +21,7 @@ export class UserServices {
         const usersRepository = UserRepository();
 
         if (!email) {
-            throw Error("Email incorreto");
+            throw Error("MESSAGE:Email incorreto");
         }
 
         const userAlreadyExists = await usersRepository.findOne({
@@ -29,16 +29,7 @@ export class UserServices {
         });
 
         if (userAlreadyExists) {
-            throw new Error("O usuário já existe");
-        }
-
-        const userDeleted = await usersRepository.findOne({
-            where: { email },
-            withDeleted: true
-        });
-
-        if(userDeleted) {
-            throw new Error("O usuário foi excluído recentemente, contate o administrador para reativa-lo");
+            throw new Error("MESSAGE:O usuário já existe");
         }
 
         const passwordHash = await hash(password, 8)
