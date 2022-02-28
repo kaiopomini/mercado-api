@@ -33,11 +33,11 @@ export class CustomerServices {
             if (emailAlreadyExists) {
                 throw new Error("MESSAGE:Email já cadastrado");
             }
-            if(cpf) {
+            if (cpf) {
                 const cpfAlreadyExists = await userRepository.findOne({
                     cpf,
                 });
-    
+
                 if (cpfAlreadyExists) {
                     throw new Error("MESSAGE:Cpf já cadastrado");
                 }
@@ -76,7 +76,7 @@ export class CustomerServices {
                 ...address,
                 user: newUser
             })
-       
+
             await addressRepository.save(addressTo)
 
             delete newUser.password
@@ -108,13 +108,9 @@ export class CustomerServices {
 
         // sort
         const sort: any = request.query.sort;
-        if (sort) {
-            builder.orderBy('customers.name', sort.toUpperCase());
-            builder.addOrderBy('customers.updated_at', 'DESC')
-        } else {
-            builder.orderBy('customers.name', 'ASC');
-            builder.addOrderBy('customers.updated_at', 'DESC')
-        }
+        const orderBy: any = request.query.order_by;
+
+        builder.orderBy(orderBy ? `customers.${orderBy}` : 'customers.name', sort ? sort.toUpperCase() : 'ASC');
 
         // paginating
         const page: number = parseInt(request.query.page as any) || 1;
@@ -189,14 +185,14 @@ export class CustomerServices {
             throw new Error("STATUS:400 MESSAGE:Email já cadastrado");
         }
 
-        
-        if(cpf) {
+
+        if (cpf) {
             const cpfAlreadyExists = await userRepository.findOne({
                 cpf,
             });
 
             //verify if cpf already exists and if isn't the same
-            if (cpfAlreadyExists && cpfAlreadyExists.cpf !== customerToUpdate.cpf ) {
+            if (cpfAlreadyExists && cpfAlreadyExists.cpf !== customerToUpdate.cpf) {
                 throw new Error("MESSAGE:Cpf já cadastrado");
             }
         }

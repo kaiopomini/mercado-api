@@ -1,4 +1,4 @@
-import { Exclude } from "class-transformer";
+import { Exclude, Transform, TransformFnParams } from "class-transformer";
 import {Entity, Column, JoinTable, ManyToMany, OneToOne, JoinColumn, OneToMany } from "typeorm";
 import { Address } from "./Address";
 
@@ -20,7 +20,11 @@ class User extends BaseEntity {
     validated_email: Boolean;
 
     @Column({
-      unique: true
+      unique: true,
+      transformer: {
+        to: (value: string) => {value.toLowerCase().trim()},
+        from: (value: string) => value
+      }
     })
     email: string;
 
@@ -34,8 +38,12 @@ class User extends BaseEntity {
 
     @Column({
       nullable: true,
-      unique: true
-    })
+      unique: true,
+      transformer: {
+        to: (value: string) => {value?.trim() ? value.trim() : null},
+        from: (value: string) => value
+      }
+    })  
     cpf: string;
 
     @Column({

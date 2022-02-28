@@ -47,21 +47,18 @@ export class ProductServices {
 
         // search
         const { search } = request.query;
-        
+
         // busca no codigo de barras quando é digitado apenas numeros
         if (search) {
             builder.where('products.gtin_code LIKE :s OR products.name LIKE :s2', { s: `${search}`, s2: `%${search}%` })
-        } 
+        }
 
         // sort
         const sort: any = request.query.sort;
-        if (sort) {
-            builder.orderBy('products.name', sort.toUpperCase());
-            builder.addOrderBy('products.created_at', 'DESC')
-        } else {
-            builder.orderBy('products.name', 'ASC');
-            builder.addOrderBy('products.created_at', 'DESC')
-        }
+        const orderBy: any = request.query.order_by;
+
+        builder.orderBy(orderBy ? `products.${orderBy}` : 'products.name', sort ? sort.toUpperCase() : 'ASC');
+
 
         // paginating
         const page: number = parseInt(request.query.page as any) || 1;
@@ -107,7 +104,7 @@ export class ProductServices {
         if (!productToUpdate) {
             throw new Error("MESSAGE:O produto não foi encontrado");
         }
-        
+
         const productAlreadyExists = await productRepository.findOne({
             gtin_code
         });
