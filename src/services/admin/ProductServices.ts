@@ -12,7 +12,6 @@ interface IProductPaginatedResponse {
 export class ProductServices {
     async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
-        console.log(quantity_type)
 
         const productAlreadyExists = await productRepository.findOne({
             gtin_code
@@ -65,7 +64,7 @@ export class ProductServices {
         const perPage: number = parseInt(request.query.per_page as any) || 10;
         const total = await builder.getCount();
 
-        builder.offset((page - 1) * perPage).limit(perPage);
+        builder.skip((page * perPage) - perPage).take(perPage);
 
         const data = await builder.getMany();
 
@@ -95,7 +94,6 @@ export class ProductServices {
 
     async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type }: Product): Promise<Product> {
         const productRepository = ProductRepository();
-        console.log(quantity_type)
 
         const productToUpdate = await productRepository.findOne({
             id

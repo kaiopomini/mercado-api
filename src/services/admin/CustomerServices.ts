@@ -118,7 +118,7 @@ export class CustomerServices {
         const perPage: number = parseInt(request.query.per_page as any) || 10;
         const total = await builder.getCount();
 
-        builder.offset((page - 1) * perPage).limit(perPage);
+        builder.skip((page * perPage)- perPage).take(perPage);
 
         const data = await builder.getMany();
 
