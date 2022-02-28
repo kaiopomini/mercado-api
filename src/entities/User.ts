@@ -22,7 +22,7 @@ class User extends BaseEntity {
     @Column({
       unique: true,
       transformer: {
-        to: (value: string) => {value.toLowerCase().trim()},
+        to: (value: string) => value.toLowerCase(),
         from: (value: string) => value
       }
     })
@@ -40,7 +40,7 @@ class User extends BaseEntity {
       nullable: true,
       unique: true,
       transformer: {
-        to: (value: string) => {value?.trim() ? value.trim() : null},
+        to: (value: string) => value?.trim() ? value.trim() : null,
         from: (value: string) => value
       }
     })  
