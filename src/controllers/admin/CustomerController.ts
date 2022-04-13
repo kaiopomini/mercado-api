@@ -10,7 +10,7 @@ export class CustomerController {
 
         const customerServices = new CustomerServices();
 
-        const customer = await customerServices.create({avatar, name, surname, email, password, cpf, address, phones, birth_date } as User);
+        const customer = await customerServices.create(address, {avatar, name, surname, email, password, cpf, phones, birth_date } as User);
 
         return response.status(201).json({
             success: true,
@@ -56,7 +56,7 @@ export class CustomerController {
 
         const customerServices = new CustomerServices();
 
-        const customer = await customerServices.update({ id, avatar, name, surname, email, password, cpf, address, phones, birth_date } as User);
+        const customer = await customerServices.update(address, { id, avatar, name, surname, email, password, cpf, phones, birth_date } as User);
 
         return response.status(200).json({
             success: true,

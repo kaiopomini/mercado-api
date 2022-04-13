@@ -1,4 +1,4 @@
-import aws, { S3 } from 'aws-sdk';
+import { S3 } from 'aws-sdk';
 import path from 'path';
 import mime from 'mime';
 import fs from 'fs';
@@ -16,7 +16,7 @@ class S3Storage {
     });
   }
 
-  async saveFile(filename: string): Promise<String> {
+  async saveFile(filename: string, pathInsideBucket: string): Promise<String> {
     const originalPath = path.resolve(multerConfig.directory, filename)
 
     const ContentType = mime.getType(originalPath);
@@ -26,16 +26,17 @@ class S3Storage {
     }
 
     const fileContent = await fs.promises.readFile(originalPath);
+    const key = `${pathInsideBucket}/${filename}`;
 
     const uploadParams = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `products/images/${filename}`,
+      Key: key,
       Body: fileContent,
       ContentType,
     }
     try {
       await this.client.upload(uploadParams).promise()
-      const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/products/images/${filename}`
+      const url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REAGION}.amazonaws.com/${key}`
       return url
     } catch (error) {
       throw new Error("MESSAGE:Erro ao salvar imagem");

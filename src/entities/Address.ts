@@ -5,6 +5,11 @@ import { User } from "./User";
 
 @Entity("addresses")
 class Address extends BaseEntity {
+
+    @Column({
+      nullable: true
+    })
+    alias: string;
     
     @Column()
     name: string;
@@ -31,7 +36,7 @@ class Address extends BaseEntity {
     @Column()
     user_id: string;
 
-    @OneToOne(type => User)
+    @ManyToOne(type => User)
     @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
     user: User;
     

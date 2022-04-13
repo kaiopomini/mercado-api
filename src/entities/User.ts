@@ -70,8 +70,8 @@ class User extends BaseEntity {
     @OneToMany(type => Phone, phone => phone.user, {eager: true})
     phones: Phone[];
 
-    @OneToOne(type => Address, address => address.user, {eager: true})
-    address: Address;
+    @OneToMany(type => Address, address => address.user, {eager: true})
+    addresses: Address[];
 }
 
 export { User };

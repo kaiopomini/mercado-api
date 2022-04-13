@@ -4,7 +4,7 @@ import { AccessControlListServices } from '../../services/admin/AccessControlLis
 export class AccessControlListController {
     async store(request: Request, response: Response) {
 
-        const { permissions, roles, user_id } = request.body;
+        const { user_id, body: {permissions, roles} } = request;
 
         const accessControlListServices = new AccessControlListServices();
 

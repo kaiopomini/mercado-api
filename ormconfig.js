@@ -16,7 +16,6 @@ if (process.env.NODE_ENV === 'development') {
             "decimalNumbers": true
         },
     }
-    return
 }
 if (process.env.NODE_ENV === 'production') {
     module.exports = {
@@ -33,5 +32,4 @@ if (process.env.NODE_ENV === 'production') {
             "decimalNumbers": true
         },
     }
-    return
 }

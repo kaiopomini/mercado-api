@@ -7,36 +7,31 @@ import multerConfig from '../config/multer';
 import { can, is } from "../middlewares/permissions";
 
 const router = Router();
-const upload = multer(multerConfig)
+const upload = multer(multerConfig);
 
-
-import { UserController } from "../controllers/user/UserController";
 import { AuthenticateUserController } from "../controllers/auth/AuthenticateUserController";
-import { ProductImageController } from "../controllers/file/ProductImageController";
-import { storeUserSchema } from "../dataModels/requests/User";
-import { validateRequest } from "../middlewares/validateRequest";
+import { UserImageController } from "../controllers/file/UserImageController";
+import { appRoutes } from "./app.routes";
 
-
-const userController = new UserController();
 const authenticateUserController = new AuthenticateUserController();
-const productImageController = new ProductImageController();
+const userImageController = new UserImageController();
 
 // admin route
-router.use('/admin', ensureAuthenticated, adminRoutes)
+router.use('/admin', ensureAuthenticated, is(['admin']), adminRoutes)
 
-// users route
-router.post("/auth", authenticateUserController.store);
-router.post("/users", storeUserSchema, validateRequest, userController.store);
+// app route
+router.use('/app', appRoutes)
 
 // auth routes
+router.post("/auth", authenticateUserController.store);
 router.get("/me", ensureAuthenticated, authenticateUserController.show);
 
-
 // files route
-router.post("/file/images", ensureAuthenticated, upload.single('image'), productImageController.store)
-router.get("/file/images", ensureAuthenticated, productImageController.index)
-router.get("/file/images/:filename", ensureAuthenticated, productImageController.show)
-router.delete("/file/images/:filename" , ensureAuthenticated, productImageController.destroy)
+router.post("/files/images/users", ensureAuthenticated, upload.single('image'), userImageController.store);
 
+//todo
+// router.get("/file/images", ensureAuthenticated, productImageController.index);
+// router.get("/file/images/:filename", ensureAuthenticated, productImageController.show);
+// router.delete("/file/images/:filename" , ensureAuthenticated, productImageController.destroy);
 
 export { router }

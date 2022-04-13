@@ -1,5 +1,8 @@
 import { Router } from "express";
+import multer from 'multer';
+import multerConfig from '../config/multer';
 
+const upload = multer(multerConfig);
 
 import { AccessControlListController } from "../controllers/admin/AccessControlListController";
 import { CustomerController } from "../controllers/admin/CustomerController";
@@ -7,8 +10,9 @@ import { PermissionController } from "../controllers/admin/PermissionController"
 import { ProductController } from "../controllers/admin/ProductController";
 import { RoleController } from "../controllers/admin/RoleController";
 import { RolePermissionController } from "../controllers/admin/RolePermissionController";
-import { storeCustomerSchema, updateCustomerSchema } from "../dataModels/requests/Customer";
-import { storeProductSchema } from "../dataModels/requests/Product";
+import { ProductImageController } from "../controllers/file/ProductImageController";
+import { storeCustomerSchema, updateCustomerSchema } from "../inputValidations/admin/Customer";
+import { storeProductSchema } from "../inputValidations/admin/Product";
 import { validateRequest } from "../middlewares/validateRequest";
 
 const router = Router();
@@ -19,6 +23,7 @@ const rolePermissionController = new RolePermissionController();
 const accessControlListController = new AccessControlListController();
 const productController = new ProductController();
 const customerController = new CustomerController();
+const productImageController = new ProductImageController();
 
 // permissions
 router.post("/roles", roleController.store);
@@ -39,5 +44,8 @@ router.get("/customers", customerController.index);
 router.get("/customers/:id", customerController.show);
 router.put("/customers/:id", updateCustomerSchema, validateRequest, customerController.update);
 router.delete("/customers/:id", customerController.destroy);
+
+//files
+router.post("/files/images/products", upload.single('image'), productImageController.store);
 
 export { router as adminRoutes }
