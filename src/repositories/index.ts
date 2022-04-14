@@ -8,6 +8,7 @@ import { EntityRepository } from 'typeorm';
 import { BaseRepository } from 'typeorm-transactional-cls-hooked';
 import { Phone } from "../entities/Phone";
 import { Address } from "../entities/Address";
+import { ProductCategory } from "../entities/ProductCategory";
 
 @EntityRepository(User)
 class UserRepositoryClass extends BaseRepository<User> {}
@@ -31,6 +32,12 @@ export const PermissionRepository = () => {
 class ProductRepositoryClass extends BaseRepository<Product> {}
 export const ProductRepository = () => {
   return getCustomRepository(ProductRepositoryClass);
+};
+
+@EntityRepository(ProductCategory)
+class ProductCategoryRepositoryClass extends BaseRepository<ProductCategory> {}
+export const ProductCategoryRepository = () => {
+  return getCustomRepository(ProductCategoryRepositoryClass);
 };
 
 @EntityRepository(Phone)

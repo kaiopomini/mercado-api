@@ -26,9 +26,6 @@ router.use('/app', appRoutes)
 router.post("/auth", authenticateUserController.store);
 router.get("/me", ensureAuthenticated, authenticateUserController.show);
 
-// files route
-router.post("/files/images/users", ensureAuthenticated, upload.single('image'), userImageController.store);
-
 //todo
 // router.get("/file/images", ensureAuthenticated, productImageController.index);
 // router.get("/file/images/:filename", ensureAuthenticated, productImageController.show);

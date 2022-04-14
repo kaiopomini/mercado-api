@@ -3,145 +3,182 @@ import { Product } from "../../entities/Product";
 
 import { ProductRepository } from "../../repositories";
 interface IProductPaginatedResponse {
-    data: Product[];
-    total: number;
-    page: number;
-    per_page: number;
-    last_page: number;
+  data: Product[];
+  total: number;
+  page: number;
+  per_page: number;
+  last_page: number;
 }
 export class ProductServices {
-    async create({ name, description, price, gtin_code, active, base_price, image, controlled_inventory, quantity, quantity_type }: Product): Promise<Product> {
-        const productRepository = ProductRepository();
+  async create({
+    name,
+    description,
+    price,
+    gtin_code,
+    active,
+    base_price,
+    image,
+    controlled_inventory,
+    quantity,
+    quantity_type,
+  }: Product): Promise<Product> {
+    const productRepository = ProductRepository();
 
-        const productAlreadyExists = await productRepository.findOne({
-            gtin_code
-        });
+    const productAlreadyExists = await productRepository.findOne({
+      gtin_code,
+    });
 
-        if (productAlreadyExists) {
-            throw new Error("MESSAGE:O produto já existe");
-        }
-
-        const product = productRepository.create({
-            name,
-            description,
-            price,
-            gtin_code,
-            active,
-            base_price,
-            image,
-            controlled_inventory,
-            quantity,
-            quantity_type
-        });
-
-        const resProduct = await productRepository.save(product);
-
-        return resProduct
+    if (productAlreadyExists) {
+      throw new Error("MESSAGE:O produto já existe");
     }
 
-    async getAll(request: Request): Promise<IProductPaginatedResponse> {
-        const productRepository = ProductRepository();
+    const product = productRepository.create({
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      image,
+      controlled_inventory,
+      quantity,
+      quantity_type,
+    });
 
-        const builder = productRepository.createQueryBuilder('products');
+    const resProduct = await productRepository.save(product);
 
-        // search
-        const { search } = request.query;
+    return resProduct;
+  }
 
-        // busca no codigo de barras quando é digitado apenas numeros
-        if (search) {
-            builder.where('products.gtin_code LIKE :s OR products.name LIKE :s2', { s: `${search}`, s2: `%${search}%` })
-        }
+  async getAll(request: Request): Promise<IProductPaginatedResponse> {
+    const productRepository = ProductRepository();
 
-        // sort
-        const sort: any = request.query.sort;
-        const orderBy: any = request.query.order_by;
+    const builder = productRepository.createQueryBuilder("products");
 
-        builder.orderBy(orderBy ? `products.${orderBy}` : 'products.name', sort ? sort.toUpperCase() : 'ASC');
+    // search
+    const { search } = request.query;
 
-
-        // paginating
-        const page: number = parseInt(request.query.page as any) || 1;
-        const perPage: number = parseInt(request.query.per_page as any) || 10;
-        const total = await builder.getCount();
-
-        builder.skip((page * perPage) - perPage).take(perPage);
-
-        const data = await builder.getMany();
-
-        const result = {
-            data,
-            total,
-            page,
-            per_page: perPage,
-            last_page: Math.ceil(total / perPage),
-        };
-
-        return result;
+    // busca no codigo de barras quando é digitado apenas numeros
+    if (search) {
+      builder.where("products.gtin_code LIKE :s OR products.name LIKE :s2", {
+        s: `${search}`,
+        s2: `%${search}%`,
+      });
     }
 
-    async getOne(id: string): Promise<Product> {
-        const productRepository = ProductRepository();
-        const product = await productRepository.findOne({
-            id
-        });
+    // sort
+    const sort: any = request.query.sort;
+    const orderBy: any = request.query.order_by;
 
-        if (!product) {
-            throw new Error("MESSAGE:O produto não foi encontrado");
-        }
+    builder.orderBy(
+      orderBy ? `products.${orderBy}` : "products.name",
+      sort ? sort.toUpperCase() : "ASC"
+    );
 
-        return product;
+    // paginating
+    const page: number = parseInt(request.query.page as any) || 1;
+    const perPage: number = parseInt(request.query.per_page as any) || 10;
+    const total = await builder.getCount();
+
+    builder.skip(page * perPage - perPage).take(perPage);
+
+    const data = await builder.getMany();
+
+    const result = {
+      data,
+      total,
+      page,
+      per_page: perPage,
+      last_page: Math.ceil(total / perPage),
+    };
+
+    return result;
+  }
+
+  async getOne(id: string): Promise<Product> {
+    try {
+      const productRepository = ProductRepository();
+
+      const builder = productRepository.createQueryBuilder("products");
+      builder.select(["products"]);
+      builder.leftJoinAndSelect("products.categories", "categories");
+      builder.where("products.id = :s", { s: `${id}` });
+
+      const product = await builder.getOne();
+
+      if (!product) {
+        throw new Error("MESSAGE:O produto não foi encontrado");
+      }
+
+      return product;
+    } catch (error) {}
+  }
+
+  async update({
+    id,
+    name,
+    description,
+    price,
+    gtin_code,
+    active,
+    base_price,
+    controlled_inventory,
+    image,
+    quantity,
+    quantity_type,
+  }: Product): Promise<Product> {
+    const productRepository = ProductRepository();
+
+    const productToUpdate = await productRepository.findOne({
+      id,
+    });
+
+    if (!productToUpdate) {
+      throw new Error("MESSAGE:O produto não foi encontrado");
     }
 
-    async update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type }: Product): Promise<Product> {
-        const productRepository = ProductRepository();
+    const productAlreadyExists = await productRepository.findOne({
+      gtin_code,
+    });
 
-        const productToUpdate = await productRepository.findOne({
-            id
-        });
-
-        if (!productToUpdate) {
-            throw new Error("MESSAGE:O produto não foi encontrado");
-        }
-
-        const productAlreadyExists = await productRepository.findOne({
-            gtin_code
-        });
-
-        if (productAlreadyExists && productAlreadyExists.gtin_code !== productToUpdate.gtin_code) {
-            throw new Error("MESSAGE:O produto já existe");
-        }
-
-        const product = {
-            id,
-            name,
-            description,
-            price,
-            gtin_code,
-            active,
-            base_price,
-            image,
-            controlled_inventory,
-            quantity,
-            quantity_type
-        };
-
-        const resProduct = await productRepository.save(product);
-
-        return resProduct;
+    if (
+      productAlreadyExists &&
+      productAlreadyExists.gtin_code !== productToUpdate.gtin_code
+    ) {
+      throw new Error("MESSAGE:O produto já existe");
     }
 
-    async delete(id: string) {
-        const productRepository = ProductRepository();
-        const product = await productRepository.findOne({
-            id
-        });
+    const product = {
+      id,
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      image,
+      controlled_inventory,
+      quantity,
+      quantity_type,
+    };
 
-        if (!product) {
-            throw new Error("MESSAGE:O produto não foi encontrado");
-        }
+    const resProduct = await productRepository.save(product);
 
-        productRepository.delete(id)
+    return resProduct;
+  }
 
-        return;
+  async delete(id: string) {
+    const productRepository = ProductRepository();
+    const product = await productRepository.findOne({
+      id,
+    });
+
+    if (!product) {
+      throw new Error("MESSAGE:O produto não foi encontrado");
     }
+
+    productRepository.delete(id);
+
+    return;
+  }
 }

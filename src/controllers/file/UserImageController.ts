@@ -1,14 +1,14 @@
 import {Request, Response } from 'express';
-import { UserImageServices } from '../../services/file/UserImageServices';
+import { ImageServices } from '../../services/file/ImageServices';
 
 export class UserImageController {
     async store(request: Request, response: Response) {
 
         const { file } = request;
     
-        const userImageServices = new UserImageServices()
+        const imageServices = new ImageServices();
 
-        const url = await userImageServices.upload(file)
+        const url = await imageServices.upload(file, 'users/avatars')
         return response.status(201).json({
             success: true,
             payload: {url : url},
@@ -18,7 +18,7 @@ export class UserImageController {
 
     async index(request: Request, response: Response) {
 
-        const userImageServices = new UserImageServices()
+        const imageServices = new ImageServices();
 
         return response.status(200).json({
             success: true,
@@ -30,7 +30,7 @@ export class UserImageController {
 
     async show(request: Request, response: Response) {
 
-        const userImageServices = new UserImageServices()
+        const imageServices = new ImageServices();
 
         return response.status(200).json({
             success: true,
@@ -43,7 +43,7 @@ export class UserImageController {
 
     async destroy(request: Request, response: Response) {
 
-        const productImageServices = new UserImageServices()
+        const imageServices = new ImageServices();
 
         return response.status(200).json({
             success: true,

@@ -1,14 +1,15 @@
 import {Request, Response } from 'express';
 import { ImageServices } from '../../services/file/ImageServices';
 
-export class ProductImageController {
+export class ProductCategoryImageController {
     async store(request: Request, response: Response) {
 
         const { file } = request;
-
+    
         const imageServices = new ImageServices();
 
-        const url = await imageServices.upload(file, 'products')
+        const url = await imageServices.upload(file, 'products-categories')
+
         return response.status(201).json({
             success: true,
             payload: {url : url},
