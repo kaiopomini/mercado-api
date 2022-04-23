@@ -169,7 +169,7 @@ export class ProductCategoryServices {
         throw new Error("MESSAGE:O cliente não foi encontrado");
       }
 
-      await productCategoryRepository.softDelete(id);
+      await productCategoryRepository.delete(id);
       return;
     } catch (error) {
       throw new Error(error);

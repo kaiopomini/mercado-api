@@ -75,7 +75,7 @@ export class ProductCategoryController {
 
         return response.status(200).json({
             success: true,
-            message: "Usuário excluído com sucesso.",
+            message: "Categoria excluída com sucesso.",
             
         });
     }

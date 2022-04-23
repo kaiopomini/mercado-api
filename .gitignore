@@ -119,3 +119,6 @@ dist
 
 # temp files
 temp/*
+
+# Mac files
+.DS_Store
