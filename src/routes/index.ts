@@ -17,7 +17,7 @@ const authenticateUserController = new AuthenticateUserController();
 const userImageController = new UserImageController();
 
 // admin route
-router.use('/admin', ensureAuthenticated, is(['admin']), adminRoutes)
+router.use('/admin', ensureAuthenticated, adminRoutes)
 
 // app route
 router.use('/app', appRoutes)

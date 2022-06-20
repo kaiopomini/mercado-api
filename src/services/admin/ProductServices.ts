@@ -96,7 +96,7 @@ export class ProductServices {
   }
 
   async getOne(id: string): Promise<Product> {
-    try {
+    
       const productRepository = ProductRepository();
 
       const builder = productRepository.createQueryBuilder("products");
@@ -111,7 +111,7 @@ export class ProductServices {
       }
 
       return product;
-    } catch (error) {}
+    
   }
 
   async update({
