@@ -1,6 +1,6 @@
 import { Router } from "express";
-import multer from 'multer';
-import multerConfig from '../config/multer';
+import multer from "multer";
+import multerConfig from "../config/multer";
 
 const upload = multer(multerConfig);
 
@@ -14,7 +14,10 @@ import { RolePermissionController } from "../controllers/admin/RolePermissionCon
 import { ProductCategoryImageController } from "../controllers/file/ProductCategoryImageController";
 import { ProductImageController } from "../controllers/file/ProductImageController";
 import { UserImageController } from "../controllers/file/UserImageController";
-import { storeCustomerSchema, updateCustomerSchema } from "../inputValidations/admin/Customer";
+import {
+  storeCustomerSchema,
+  updateCustomerSchema,
+} from "../inputValidations/admin/Customer";
 import { storeProductSchema } from "../inputValidations/admin/Product";
 import { validateRequest } from "../middlewares/validateRequest";
 
@@ -38,32 +41,71 @@ router.post("/acl", accessControlListController.store);
 router.post("/roles-permissions", rolePermissionController.store);
 
 //products
-router.post("/products", storeProductSchema, validateRequest, productController.store);
+router.post(
+  "/products",
+  storeProductSchema,
+  validateRequest,
+  productController.store
+);
 router.get("/products", productController.index);
+router.get("/products/bycategory/:id", productController.listByCategory);
 router.get("/products/:id", productController.show);
-router.put("/products/:id", storeProductSchema, validateRequest, productController.update);
+router.put(
+  "/products/:id",
+  storeProductSchema,
+  validateRequest,
+  productController.update
+);
 router.delete("/products/:id", productController.destroy);
 
 //customers
-router.post("/customers", storeCustomerSchema, validateRequest, customerController.store);
+router.post(
+  "/customers",
+  storeCustomerSchema,
+  validateRequest,
+  customerController.store
+);
 router.get("/customers", customerController.index);
 router.get("/customers/:id", customerController.show);
-router.put("/customers/:id", updateCustomerSchema, validateRequest, customerController.update);
+router.put(
+  "/customers/:id",
+  updateCustomerSchema,
+  validateRequest,
+  customerController.update
+);
 router.delete("/customers/:id", customerController.destroy);
 
 //categories
 router.post("/categories", productCategoryController.store);
 router.get("/categories", productCategoryController.index);
-router.get("/categories/input-labels", productCategoryController.labelsForInput);
+router.get(
+  "/categories/input-labels",
+  productCategoryController.labelsForInput
+);
 router.get("/categories/:id", productCategoryController.show);
 router.put("/categories/add-products", productCategoryController.addProducts);
-router.put("/categories/remove-products", productCategoryController.removeProducts);
+router.put(
+  "/categories/remove-products",
+  productCategoryController.removeProducts
+);
 router.put("/categories/:id", productCategoryController.update);
 router.delete("/categories/:id", productCategoryController.destroy);
 
 //files
-router.post("/files/images/products", upload.single('image'), productImageController.store);
-router.post("/files/images/users", upload.single('image'), userImageController.store);
-router.post("/files/images/products-categories", upload.single('image'), productCategoryImageController.store);
+router.post(
+  "/files/images/products",
+  upload.single("image"),
+  productImageController.store
+);
+router.post(
+  "/files/images/users",
+  upload.single("image"),
+  userImageController.store
+);
+router.post(
+  "/files/images/products-categories",
+  upload.single("image"),
+  productCategoryImageController.store
+);
 
-export { router as adminRoutes }
+export { router as adminRoutes };

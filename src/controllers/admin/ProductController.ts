@@ -1,81 +1,136 @@
-import { Request, Response } from 'express';
-import { Product } from '../../entities/Product';
-import { ProductServices } from '../../services/admin/ProductServices';
+import { Request, Response } from "express";
+import { Product } from "../../entities/Product";
+import { ProductServices } from "../../services/admin/ProductServices";
 
 export class ProductController {
-    async store(request: Request, response: Response) {
+  async store(request: Request, response: Response) {
+    const {
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      controlled_inventory,
+      image,
+      quantity,
+      quantity_type,
+      categories,
+    } = request.body;
 
-        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } = request.body;
+    const productServices = new ProductServices();
 
-        const productServices = new ProductServices();
+    const product = await productServices.create({
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      controlled_inventory,
+      image,
+      quantity,
+      quantity_type,
+      categories,
+    } as Product);
 
-        const product = await productServices.create({ name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } as Product);
+    return response.status(201).json({
+      success: true,
+      payload: product,
+      message: "Produto criado com sucesso.",
+    });
+  }
 
-        return response.status(201).json({
-            success: true,
-            payload: product,
-            message: "Produto criado com sucesso."
-        });
-    }
+  async index(request: Request, response: Response) {
+    const productServices = new ProductServices();
 
-    async index(request: Request, response: Response) {
+    const { data, ...rest } = await productServices.getAll(request);
 
-        const productServices = new ProductServices();
+    return response.status(200).json({
+      success: true,
+      payload: data,
+      message: "Requisição realizada com sucesso.",
+      ...rest,
+    });
+  }
 
-        const { data, ...rest } = await productServices.getAll(request);
+  async show(request: Request, response: Response) {
+    const { id } = request.params;
 
-        return response.status(200).json({
-            success: true,
-            payload: data,
-            message: "Requisição realizada com sucesso.",
-            ...rest
-        });
-    }
+    const productServices = new ProductServices();
 
-    async show(request: Request, response: Response) {
+    const product = await productServices.getOne(id);
 
-        const { id } = request.params
+    return response.status(200).json({
+      success: true,
+      payload: product,
+      message: "Requisição realizada com sucesso.",
+    });
+  }
 
-        const productServices = new ProductServices();
+  async update(request: Request, response: Response) {
+    const { id } = request.params;
+    const {
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      controlled_inventory,
+      image,
+      quantity,
+      quantity_type,
+      categories,
+    } = request.body;
 
-        const product = await productServices.getOne(id);
+    const productServices = new ProductServices();
 
-        return response.status(200).json({
-            success: true,
-            payload: product,
-            message: "Requisição realizada com sucesso.",
+    const product = await productServices.update({
+      id,
+      name,
+      description,
+      price,
+      gtin_code,
+      active,
+      base_price,
+      controlled_inventory,
+      image,
+      quantity,
+      quantity_type,
+      categories,
+    } as Product);
 
-        });
-    }
+    return response.status(200).json({
+      success: true,
+      payload: product,
+      message: "Produto atualizado com sucesso.",
+    });
+  }
 
-    async update(request: Request, response: Response) {
+  async destroy(request: Request, response: Response) {
+    const { id } = request.params;
 
-        const { id } = request.params;
-        const { name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } = request.body;
+    const productServices = new ProductServices();
 
-        const productServices = new ProductServices();
+    const product = await productServices.delete(id);
 
-        const product = await productServices.update({ id, name, description, price, gtin_code, active, base_price, controlled_inventory, image, quantity, quantity_type } as Product);
+    return response.status(200).json({
+      success: true,
+      message: "Produto excluído com sucesso.",
+    });
+  }
 
-        return response.status(200).json({
-            success: true,
-            payload: product,
-            message: "Produto atualizado com sucesso."
-        });
-    }
+  async listByCategory(request: Request, response: Response) {
+    const productServices = new ProductServices();
 
-    async destroy(request: Request, response: Response) {
+    const { data, ...rest } = await productServices.getAllByCategory(request);
 
-        const { id } = request.params
-
-        const productServices = new ProductServices();
-
-        const product = await productServices.delete(id);
-
-        return response.status(200).json({
-            success: true,
-            message: "Produto excluído com sucesso.",
-
-        });
-    }
+    return response.status(200).json({
+      success: true,
+      payload: data,
+      message: "Requisição realizada com sucesso.",
+      ...rest,
+    });
+  }
 }

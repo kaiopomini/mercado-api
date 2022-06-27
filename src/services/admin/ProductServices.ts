@@ -1,7 +1,10 @@
 import { Request } from "express-serve-static-core";
 import { Product } from "../../entities/Product";
 
-import { ProductRepository } from "../../repositories";
+import {
+  ProductCategoryRepository,
+  ProductRepository,
+} from "../../repositories";
 interface IProductPaginatedResponse {
   data: Product[];
   total: number;
@@ -21,6 +24,7 @@ export class ProductServices {
     controlled_inventory,
     quantity,
     quantity_type,
+    categories,
   }: Product): Promise<Product> {
     const productRepository = ProductRepository();
 
@@ -31,6 +35,11 @@ export class ProductServices {
     if (productAlreadyExists) {
       throw new Error("MESSAGE:O produto já existe");
     }
+
+    const productCategoryRepository = ProductCategoryRepository();
+    const categoriesToAdd = await productCategoryRepository.findByIds(
+      categories
+    );
 
     const product = productRepository.create({
       name,
@@ -43,6 +52,7 @@ export class ProductServices {
       controlled_inventory,
       quantity,
       quantity_type,
+      categories: categoriesToAdd ? categoriesToAdd : [],
     });
 
     const resProduct = await productRepository.save(product);
@@ -96,22 +106,20 @@ export class ProductServices {
   }
 
   async getOne(id: string): Promise<Product> {
-    
-      const productRepository = ProductRepository();
+    const productRepository = ProductRepository();
 
-      const builder = productRepository.createQueryBuilder("products");
-      builder.select(["products"]);
-      builder.leftJoinAndSelect("products.categories", "categories");
-      builder.where("products.id = :s", { s: `${id}` });
+    const builder = productRepository.createQueryBuilder("products");
+    builder.select(["products"]);
+    builder.leftJoinAndSelect("products.categories", "categories");
+    builder.where("products.id = :s", { s: `${id}` });
 
-      const product = await builder.getOne();
+    const product = await builder.getOne();
 
-      if (!product) {
-        throw new Error("MESSAGE:O produto não foi encontrado");
-      }
+    if (!product) {
+      throw new Error("MESSAGE:O produto não foi encontrado");
+    }
 
-      return product;
-    
+    return product;
   }
 
   async update({
@@ -126,6 +134,7 @@ export class ProductServices {
     image,
     quantity,
     quantity_type,
+    categories,
   }: Product): Promise<Product> {
     const productRepository = ProductRepository();
 
@@ -148,6 +157,11 @@ export class ProductServices {
       throw new Error("MESSAGE:O produto já existe");
     }
 
+    const productCategoryRepository = ProductCategoryRepository();
+    const categoriesToAdd = await productCategoryRepository.findByIds(
+      categories
+    );
+
     const product = {
       id,
       name,
@@ -160,6 +174,7 @@ export class ProductServices {
       controlled_inventory,
       quantity,
       quantity_type,
+      categories: categoriesToAdd ? categoriesToAdd : [],
     };
 
     const resProduct = await productRepository.save(product);
@@ -180,5 +195,65 @@ export class ProductServices {
     productRepository.delete(id);
 
     return;
+  }
+
+  async getAllByCategory(request: Request): Promise<IProductPaginatedResponse> {
+    const productRepository = ProductRepository();
+
+    const builder = productRepository.createQueryBuilder("products");
+
+    // search
+    const { id } = request.params;
+    const { search, filter } = request.query;
+
+    builder
+      .select("products")
+      .leftJoinAndSelect("products.categories", "categories");
+
+    switch (filter) {
+      case "own":
+        builder.where("categories.id = :id", { id });
+        break;
+      case "others":
+        builder.where("categories.id != :id or categories.id is null", { id });
+        break;
+      default:
+    }
+
+    // busca no codigo de barras quando é digitado apenas numeros
+    if (search) {
+      builder.andWhere("products.gtin_code LIKE :s OR products.name LIKE :s2", {
+        s: `${search}`,
+        s2: `%${search}%`,
+      });
+    }
+
+    // sort
+    const sort: any = request.query.sort;
+    const orderBy: any = request.query.order_by;
+
+    builder.orderBy(
+      orderBy ? `products.${orderBy}` : "products.name",
+      sort ? sort.toUpperCase() : "ASC"
+    );
+
+    // paginating
+    const page: number = parseInt(request.query.page as any) || 1;
+    const perPage: number = parseInt(request.query.per_page as any) || 10;
+    const total = await builder.getCount();
+
+    builder.skip(page * perPage - perPage).take(perPage);
+
+    const data = await builder.getMany();
+
+    const result = {
+      data,
+      total,
+      page,
+      per_page: perPage,
+      last_page: Math.ceil(total / perPage),
+    };
+
+    return result;
   }
 }

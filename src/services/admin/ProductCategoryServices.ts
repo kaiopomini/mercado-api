@@ -100,8 +100,8 @@ export class ProductCategoryServices {
       const builder =
         productCategoryRepository.createQueryBuilder("categories");
       builder.select(["categories"]);
-      builder.leftJoinAndSelect("categories.products", "products");
       builder.where("categories.id = :s", { s: `${id}` });
+      // builder.select(["products.id"]);
 
       const category = await builder.getOne();
 
@@ -249,9 +249,9 @@ export class ProductCategoryServices {
 
       const removedProducts = Array<Product>();
 
-      const products = category.products.filter(product => {
+      const products = category.products.filter((product) => {
         let stayProduct = true;
-        productsToRemove.forEach(item => {
+        productsToRemove.forEach((item) => {
           if (product.id === item.id) {
             stayProduct = false;
           }

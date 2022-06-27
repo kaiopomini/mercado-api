@@ -7,14 +7,16 @@ export class ProductCategory extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column()
   image: string;
 
   @Column({
-    default: false
+    default: false,
   })
   active: boolean;
 
@@ -27,14 +29,12 @@ export class ProductCategory extends BaseEntity {
   products: Product[];
 
   constructor() {
-    super()
+    super();
     if (!this.image) {
-      this.image = 'default';
+      this.image = "default";
     }
     if (!this.active) {
       this.active = false;
     }
-
   }
-
 }
