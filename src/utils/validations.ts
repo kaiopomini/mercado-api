@@ -49,7 +49,6 @@ export function validadeCPF(cpf: string): boolean {
 export function validatePhone(phone: string): boolean {
   
   // const validPhoneMaskReg = new RegExp("/^(?:\+)[0-9]{2}\s?(?:\()[0-9]{2}(?:\))\s?[0-9]{4,5}(?:-)[0-9]{4}$/");
-
   const validDigitsReg = new RegExp("^[0-9]{10,11}$");
  
   if (!validDigitsReg.test(phone)) {
